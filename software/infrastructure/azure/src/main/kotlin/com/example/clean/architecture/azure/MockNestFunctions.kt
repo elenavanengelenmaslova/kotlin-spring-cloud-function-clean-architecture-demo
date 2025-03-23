@@ -48,7 +48,7 @@ class MockNestFunctions(
         return request
             .createResponseBuilder(HttpStatus.valueOf(200))
             //TODO: Add headers
-            .body("Hello VoxxedDays Amsterdam!")
+            .body("Hello VoxxedDays Amsterdam 2025!")
             .build()
     }
 

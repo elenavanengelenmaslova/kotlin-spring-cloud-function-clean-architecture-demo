@@ -22,7 +22,7 @@ class MockNestFunctions(
             APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
                 // TODO: Add headers
-                .withBody("Hello VoxxedDays Amsterdam!")
+                .withBody("Hello VoxxedDays Amsterdam 2025!")
         }
     }
 }
