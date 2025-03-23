@@ -92,7 +92,7 @@ jobs:
           aws-region: ${{ inputs.aws_region }}
 
       - name: Upload Lambda JAR to S3
-        run: aws s3 cp build/dist/aws-function.jar s3://lambda-deployment-clean-architecture-example/aws-function.jar --region ${{ inputs.aws_region }}
+        run: aws s3 cp build/dist/demo-aws-function.jar s3://lambda-deployment-clean-architecture-example/demo-aws-function.jar --region ${{ inputs.aws_region }}
 
       - uses: actions/setup-node@v4
         with:
