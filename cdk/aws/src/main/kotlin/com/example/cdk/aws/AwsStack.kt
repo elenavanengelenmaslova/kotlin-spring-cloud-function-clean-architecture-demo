@@ -67,7 +67,7 @@ class AwsStack(
             S3BackendConfig.builder()
                 .region(region)
                 .bucket("kotlin-lambda-terraform-state")
-                .key("example-terraform-cdk/terraform.tfstate")
+                .key("demo-terraform-cdk/terraform.tfstate")
                 .encrypt(true).build()
         )
 
