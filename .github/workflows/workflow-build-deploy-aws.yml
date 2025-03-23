@@ -84,9 +84,6 @@ jobs:
           name: LambdaArtifacts
           path: build/dist/
 
-      - name: Hash JAR file before upload
-        run: sha256sum build/dist/aws-function.jar
-
       - name: Configure aws credentials for CDK deployment
         uses: aws-actions/configure-aws-credentials@master
         with:
