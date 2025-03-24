@@ -98,7 +98,6 @@ azurefunctions {
     appName = "demo-spring-clean-architecture-fun"
     region = "westeurope"
     setAppSettings(mapOf(
-        "FUNCTIONS_WORKER_RUNTIME" to "java",
         "WEBSITE_RUN_FROM_PACKAGE" to "1"
     ))
 }
@@ -127,13 +126,4 @@ tasks.withType<ProcessResources> {
 
 tasks.named("compileJava") {
     dependsOn("compileKotlin")
-}
-
-azurefunctions {
-    resourceGroup = "DefaultResourceGroup-WEU"
-    appName = "spring-clean-architecture-fun"
-    region = "westeurope"
-    setAppSettings(mapOf(
-        "WEBSITE_RUN_FROM_PACKAGE" to "1"
-    ))
 }
