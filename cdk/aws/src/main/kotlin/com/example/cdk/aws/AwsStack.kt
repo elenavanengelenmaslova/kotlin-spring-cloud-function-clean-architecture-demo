@@ -271,7 +271,7 @@ class AwsStack(
             this,
             "Demo-Spring-Clean-Architecture-ApiKey",
             ApiGatewayApiKeyConfig.builder()
-                .name("`Demo-Spring-Clean-Architecture-ApiKey")
+                .name("Demo-Spring-Clean-Architecture-ApiKey")
                 .description("API Key for Spring Clean Architecture Example")
                 .enabled(true)
                 .build()
