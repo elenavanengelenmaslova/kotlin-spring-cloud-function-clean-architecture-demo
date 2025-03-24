@@ -4,6 +4,7 @@ on:
     branches: [ xxmain ]
     paths-ignore:
       - '**.md'
+      - 'docs'
       - 'cdk/azure/**'
       - 'software/infrastructure/azure/**'
   workflow_dispatch:

@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger {}
 @Component
 class WireMockAdminForwarder(
     private val wireMockServer: WireMockServer,
-    private val wireMockMappingRepository: WireMockMappingRepository,
+    //TODO: WireMockMappingRepository,
 ) : HandleAdminRequest {
 
     override fun invoke(
@@ -48,13 +48,7 @@ class WireMockAdminForwarder(
                 wireMockServer.runCatching {
                     resetToDefaultMappings()
 
-                    // Delete all mappings from storage
-                    val storedMappings = wireMockMappingRepository.listMappings()
-                    storedMappings.forEach { mappingId ->
-                        logger.info { "Deleting stored WireMock mapping with ID: $mappingId" }
-                        wireMockMappingRepository.deleteMapping(mappingId)
-                    }
-
+                    // TODO: Delete all mappings from storage
                     HttpResponse(HttpStatusCode.valueOf(200), body = "Mappings reset successfully")
                 }.getOrElse { handleAdminException(it) }
             }
@@ -70,9 +64,7 @@ class WireMockAdminForwarder(
                         val mapping = bodyString.toStubMapping()
                         // Add the mapping to WireMock
                         addStubMapping(mapping)
-                        // Check if mapping is persistent and save it
-                        saveStubMapping(mapping, bodyString)?.let { "Saved mapping $it" }
-                            ?: "Mapping ${mapping.id} not saved, persistent: ${mapping.isPersistent}"
+                        // TODO: Check if mapping is persistent and save it
                     }
 
                     // Return the response
@@ -103,11 +95,7 @@ class WireMockAdminForwarder(
 
                             // Update the mapping in WireMock
                             wireMockServer.editStubMapping(mapping)
-
-                            // Check if mapping is persistent and save it
-                            saveStubMapping(mapping, bodyString)?.let { "Updated mapping $it" }
-                                ?: "Mapping ${mapping.id} updated but not persisted, persistent: ${mapping.isPersistent}"
-
+                            // TODO: Check if mapping is persistent and save it
                         }
                         HttpResponse(HttpStatusCode.valueOf(200), body = updatedMapping)
                     }
@@ -115,8 +103,7 @@ class WireMockAdminForwarder(
                     HttpMethod.DELETE -> {
                         logger.info { "Deleting WireMock mapping with ID: $mappingId" }
                         wireMockServer.removeStubMapping(mappingId)
-                        // Remove from persistent storage
-                        wireMockMappingRepository.deleteMapping(mappingIdAsString)
+                        // TODO: Remove from persistent storage
                         HttpResponse(HttpStatusCode.valueOf(200), body = "Stub mapping deleted successfully")
                     }
 
@@ -150,15 +137,4 @@ class WireMockAdminForwarder(
     }
 
     private fun String.toStubMapping(): StubMapping = Json.getObjectMapper().readValue(this, StubMapping::class.java)
-
-    private fun saveStubMapping(mapping: StubMapping, bodyString: String, ): String? {
-        return mapping.runCatching {
-            if (isPersistent) {
-                logger.info { "Saving persistent mapping with ID: $id" }
-                wireMockMappingRepository.saveMapping(id.toString(), bodyString)
-            } else null
-        }.onFailure {
-            logger.error(it) { "Failed to check or save persistent mapping: ${it.message}" }
-        }.getOrThrow()
-    }
 }

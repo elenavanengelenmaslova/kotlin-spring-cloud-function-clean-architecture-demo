@@ -97,9 +97,9 @@ azurefunctions {
     resourceGroup = "DefaultResourceGroup-WEU"
     appName = "demo-spring-clean-architecture-fun"
     region = "westeurope"
-    setAppSettings(mapOf(
+    appSettings = mapOf(
         "WEBSITE_RUN_FROM_PACKAGE" to "1"
-    ))
+    )
 }
 
 tasks.test {

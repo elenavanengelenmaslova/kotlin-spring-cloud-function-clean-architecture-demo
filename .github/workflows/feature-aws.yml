@@ -1,9 +1,10 @@
 name: Kotlin Lambda infra CI/CD Feature
 on:
   push:
-    branches: [ xxfeature/* ]
+    branches: [ feature/* ]
     paths-ignore:
       - '**.md'
+      - 'docs'
       - 'cdk/azure/**'
       - 'software/infrastructure/azure/**'
   workflow_dispatch:

@@ -4,6 +4,7 @@ on:
     branches: [ xxfeature/* ]
     paths-ignore:
       - '**.md'
+      - 'docs'
       - 'cdk/aws/**'
       - 'software/infrastructure/aws/**'
       - '.github/workflows/*-aws.yml'
