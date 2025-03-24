@@ -266,7 +266,7 @@
       "s3": {
         "bucket": "kotlin-lambda-terraform-state",
         "encrypt": true,
-        "key": "example-terraform-cdk/terraform.tfstate",
+        "key": "demo-terraform-cdk/terraform.tfstate",
         "region": "eu-west-1"
       }
     },
