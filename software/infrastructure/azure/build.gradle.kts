@@ -95,7 +95,7 @@ tasks.jar {
 
 azurefunctions {
     resourceGroup = "DefaultResourceGroup-WEU"
-    appName = "spring-clean-architecture-fun"
+    appName = "demo-spring-clean-architecture-fun"
     region = "westeurope"
     setAppSettings(mapOf(
         "FUNCTIONS_WORKER_RUNTIME" to "java",
