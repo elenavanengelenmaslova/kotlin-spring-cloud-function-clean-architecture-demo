@@ -20,7 +20,7 @@ class BlobStorageConfig(
 
     @Bean
     fun blobContainerClient(): BlobContainerClient {
-        logger.info { "Initializing Blob Container Client with container name: $containerName using managed identity" }
+        logger.info { "Initializing Blob Container Client with endpoint: $endpoint and container name: $containerName using managed identity" }
         val credential = DefaultAzureCredentialBuilder().build()
         return BlobServiceClientBuilder()
             .endpoint(endpoint)
