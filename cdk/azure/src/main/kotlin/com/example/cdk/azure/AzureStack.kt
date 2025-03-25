@@ -94,7 +94,7 @@ class AzureStack(scope: Construct, id: String) :
         // Create a Blob Storage Container for WireMock Mappings
         val storageContainer = StorageContainer(
             this,
-            "demp-wiremock-container",
+            "demo-wiremock-container",
             StorageContainerConfig.builder()
                 .name("demo-wiremock-mappings")  // ✅ Blob storage container name
                 .storageAccountName(storageAccount.name)
