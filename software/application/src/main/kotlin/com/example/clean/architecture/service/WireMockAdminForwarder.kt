@@ -2,7 +2,6 @@ package com.example.clean.architecture.service
 
 import com.example.clean.architecture.model.HttpRequest
 import com.example.clean.architecture.model.HttpResponse
-import com.example.clean.architecture.persistence.WireMockMappingRepository
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.common.InvalidInputException
 import com.github.tomakehurst.wiremock.common.Json
@@ -65,6 +64,7 @@ class WireMockAdminForwarder(
                         // Add the mapping to WireMock
                         addStubMapping(mapping)
                         // TODO: Check if mapping is persistent and save it
+                        "Success"
                     }
 
                     // Return the response
@@ -96,6 +96,7 @@ class WireMockAdminForwarder(
                             // Update the mapping in WireMock
                             wireMockServer.editStubMapping(mapping)
                             // TODO: Check if mapping is persistent and save it
+                            "Success"
                         }
                         HttpResponse(HttpStatusCode.valueOf(200), body = updatedMapping)
                     }
