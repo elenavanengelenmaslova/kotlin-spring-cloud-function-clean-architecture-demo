@@ -62,7 +62,7 @@ class AzureStack(scope: Construct, id: String) :
                 .resourceGroupName(resourceGroupName)
                 .storageAccountName(System.getenv("AZURE_STORAGE_ACCOUNT_NAME"))
                 .containerName("vintikterraformstorage")
-                .key("kscfunction-example/terraform.tfstate")
+                .key("demo-terraform-cdk/terraform.tfstate")
                 .clientId(System.getenv("AZURE_CLIENT_ID"))
                 .clientSecret(System.getenv("AZURE_CLIENT_SECRET"))
                 .subscriptionId(System.getenv("AZURE_SUBSCRIPTION_ID"))
