@@ -51,3 +51,4 @@ cdk/aws/src/main/resources/
 !cdktf.out/generated/versions.json
 # macOS
 .DS_Store
+/cdk/aws/java_pid47066.hprof
