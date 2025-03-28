@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component
 import com.github.tomakehurst.wiremock.http.HttpHeaders as WireMockHttpHeaders
 
 private val logger = KotlinLogging.logger {}
-private const val BASE_URL = "http://wiremock.internal"
+private const val BASE_URL = "http://mocknest.internal"
 
 @Component
-class WireMockForwarder(private val directCallHttpServer: DirectCallHttpServer) :
-    HandleWireMockRequest {
+class ClientRequestForwarder(private val directCallHttpServer: DirectCallHttpServer) :
+    HandleClientRequest {
     override fun invoke(httpRequest: HttpRequest): HttpResponse {
         logger.info { "Forwarding request body: ${httpRequest.body} to path: ${httpRequest.path}" }
         return runCatching {
@@ -31,8 +31,8 @@ class WireMockForwarder(private val directCallHttpServer: DirectCallHttpServer) 
             val absoluteURL = "$BASE_URL/$path$queryString"
 
             logger.info { "Posting to absolute url: $absoluteURL" }
-            // Create a WireMock request using the WireMock client
-            val wireMockRequest =
+            // Create a MockNest request
+            val mockNestRequest =
                 ImmutableRequest.create()
                     .withAbsoluteUrl(absoluteURL)
                     .withMethod(
@@ -49,14 +49,14 @@ class WireMockForwarder(private val directCallHttpServer: DirectCallHttpServer) 
                     .withBody(httpRequest.body?.toString().orEmpty().toByteArray())
                     .build()
 
-            logger.debug { "Calling wiremock with request: ${httpRequest.method} ${httpRequest.path}" }
+            logger.debug { "Calling MockNest with request: ${httpRequest.method} ${httpRequest.path}" }
 
             // Call stubRequest on the DirectCallHttpServer
-            val response = directCallHttpServer.stubRequest(wireMockRequest)
+            val response = directCallHttpServer.stubRequest(mockNestRequest)
 
-            logger.trace { "Wiremock response: ${response.bodyAsString}, code: ${response.status}" }
+            logger.trace { "MockNest response: ${response.bodyAsString}, code: ${response.status}" }
 
-            // Convert the WireMock Response to an HttpResponse
+            // Convert the MockNest Response to an HttpResponse
             val responseHeaders = HttpHeaders()
             response.headers.all().forEach { header ->
                 responseHeaders.add(header.key(), header.firstValue())
@@ -69,7 +69,7 @@ class WireMockForwarder(private val directCallHttpServer: DirectCallHttpServer) 
             )
         }.getOrElse { exception ->
             // Handle exceptions
-            logger.error(exception) { "Failed to call wiremock: ${exception.message}" }
+            logger.error(exception) { "Failed to call MockNest: ${exception.message}" }
             HttpResponse(
                 HttpStatusCode.valueOf(500),
                 body = exception.message

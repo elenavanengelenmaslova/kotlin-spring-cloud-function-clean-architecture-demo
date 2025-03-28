@@ -29,7 +29,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 dependencies {
-    //TODO: Add domain
+    implementation(project(":domain"))
     implementation(project(":application"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -93,16 +93,6 @@ tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
-azurefunctions {
-    resourceGroup = "DefaultResourceGroup-WEU"
-    appName = "spring-clean-architecture-fun"
-    region = "westeurope"
-    setAppSettings(mapOf(
-        "FUNCTIONS_WORKER_RUNTIME" to "java",
-        "WEBSITE_RUN_FROM_PACKAGE" to "1"
-    ))
-}
-
 tasks.test {
     useJUnitPlatform()
 }
@@ -131,7 +121,7 @@ tasks.named("compileJava") {
 
 azurefunctions {
     resourceGroup = "DefaultResourceGroup-WEU"
-    appName = "spring-clean-architecture-fun"
+    appName = "demo-spring-clean-architecture-fun"
     region = "westeurope"
     setAppSettings(mapOf(
         "WEBSITE_RUN_FROM_PACKAGE" to "1"

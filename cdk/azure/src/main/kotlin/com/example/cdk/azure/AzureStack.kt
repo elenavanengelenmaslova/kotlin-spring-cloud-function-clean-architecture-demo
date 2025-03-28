@@ -91,14 +91,14 @@ class AzureStack(scope: Construct, id: String) :
                 .build()
         )
 
-        // Create a Blob Storage Container for WireMock Mappings
+        // Create a Blob Storage Container for MockNest Mappings
         val storageContainer = StorageContainer(
             this,
-            "demp-wiremock-container",
+            "demo-mocknest-container",
             StorageContainerConfig.builder()
-                .name("demo-wiremock-mappings")  // ✅ Blob storage container name
+                .name("demo-mocknest-mappings")  // Blob storage container name
                 .storageAccountName(storageAccount.name)
-                .containerAccessType("private")  // ✅ Private access for security
+                .containerAccessType("private")  // Private access for security
                 .dependsOn(listOf(storageAccount))
                 .build()
         )
@@ -181,9 +181,9 @@ class AzureStack(scope: Construct, id: String) :
             this,
             "DemoFunctionAppBlobStorageRole",
             RoleAssignmentConfig.builder()
-                .scope(storageAccount.id)  // ✅ Assign access at the Storage Account level
-                .roleDefinitionName("Storage Blob Data Contributor")  // ✅ Allows reading and writing blobs
-                .principalId(functionApp.identity.principalId)  // ✅ Assign to Function App's Managed Identity
+                .scope(storageAccount.id)  // Assign access at the Storage Account level
+                .roleDefinitionName("Storage Blob Data Contributor")  // Allows reading and writing blobs
+                .principalId(functionApp.identity.principalId)  // Assign to Function App's Managed Identity
                 .build()
         )
 

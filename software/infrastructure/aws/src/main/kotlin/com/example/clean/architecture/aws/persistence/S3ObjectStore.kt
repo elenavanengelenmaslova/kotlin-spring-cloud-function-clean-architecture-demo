@@ -1,10 +1,13 @@
 package com.example.clean.architecture.aws.persistence
 
-import com.example.clean.architecture.persistence.WireMockMappingRepository
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.sdk.kotlin.services.s3.model.*
+import aws.sdk.kotlin.services.s3.model.DeleteObjectRequest
+import aws.sdk.kotlin.services.s3.model.GetObjectRequest
+import aws.sdk.kotlin.services.s3.model.ListObjectsV2Request
+import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.toByteArray
+import com.example.clean.architecture.persistence.ObjectStorageInterface
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
@@ -14,12 +17,12 @@ import java.nio.charset.StandardCharsets
 private val logger = KotlinLogging.logger {}
 
 @Repository
-class S3WireMockMappingRepository(
+class S3ObjectStore(
     @Value("\${aws.s3.bucket-name}") private val bucketName: String,
     private val s3Client: S3Client,
-) : WireMockMappingRepository {
+) : ObjectStorageInterface {
 
-    override fun saveMapping(id: String, content: String): String = runBlocking {
+    override fun save(id: String, content: String): String = runBlocking {
         logger.info { "Saving mapping with id: $id" }
         runCatching {
             val contentBytes = content.toByteArray(StandardCharsets.UTF_8)
@@ -37,7 +40,7 @@ class S3WireMockMappingRepository(
 
     }
 
-    override fun getMapping(id: String): String? = runBlocking {
+    override fun get(id: String): String? = runBlocking {
         logger.info { "Getting mapping with id: $id" }
         runCatching {
             var content: String? = null
@@ -53,9 +56,9 @@ class S3WireMockMappingRepository(
         }.getOrThrow()
     }
 
-    override fun deleteMapping(id: String): Unit = runBlocking {
+    override fun delete(id: String): Unit = runBlocking {
         logger.info { "Deleting mapping with id: $id" }
-        val response = runCatching {
+        runCatching {
             s3Client.deleteObject(DeleteObjectRequest {
                 bucket = bucketName
                 key = id
@@ -64,11 +67,11 @@ class S3WireMockMappingRepository(
             .getOrThrow()
     }
 
-    override fun listMappings(): List<String> = runBlocking {
+    override fun list(): List<String> = runBlocking {
         logger.info { "Listing all mappings" }
         runCatching {
             s3Client.listObjectsV2(ListObjectsV2Request { bucket = bucketName })
         }.onFailure { e -> logger.error(e) { "Failed to list mappings" } }
-            .getOrThrow()?.contents?.mapNotNull { it.key } ?: emptyList()
+            .getOrThrow().contents?.mapNotNull { it.key } ?: emptyList()
     }
 }

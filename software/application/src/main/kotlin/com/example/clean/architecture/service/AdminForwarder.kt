@@ -2,7 +2,7 @@ package com.example.clean.architecture.service
 
 import com.example.clean.architecture.model.HttpRequest
 import com.example.clean.architecture.model.HttpResponse
-import com.example.clean.architecture.persistence.WireMockMappingRepository
+import com.example.clean.architecture.persistence.ObjectStorageInterface
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.common.InvalidInputException
 import com.github.tomakehurst.wiremock.common.Json
@@ -18,9 +18,9 @@ import java.util.*
 private val logger = KotlinLogging.logger {}
 
 @Component
-class WireMockAdminForwarder(
+class AdminForwarder(
     private val wireMockServer: WireMockServer,
-    private val wireMockMappingRepository: WireMockMappingRepository,
+    private val objectStorage: ObjectStorageInterface,
 ) : HandleAdminRequest {
 
     override fun invoke(
@@ -44,15 +44,15 @@ class WireMockAdminForwarder(
             }
 
             path == "mappings/reset" && httpRequest.method == HttpMethod.POST -> {
-                logger.info { "Resetting WireMock mappings" }
+                logger.info { "Resetting MockNest mappings" }
                 wireMockServer.runCatching {
                     resetToDefaultMappings()
 
                     // Delete all mappings from storage
-                    val storedMappings = wireMockMappingRepository.listMappings()
+                    val storedMappings = objectStorage.list()
                     storedMappings.forEach { mappingId ->
-                        logger.info { "Deleting stored WireMock mapping with ID: $mappingId" }
-                        wireMockMappingRepository.deleteMapping(mappingId)
+                        logger.info { "Deleting stored MockNest mapping with ID: $mappingId" }
+                        objectStorage.delete(mappingId)
                     }
 
                     HttpResponse(HttpStatusCode.valueOf(200), body = "Mappings reset successfully")
@@ -60,7 +60,7 @@ class WireMockAdminForwarder(
             }
 
             path == "mappings" && httpRequest.method == HttpMethod.POST -> {
-                logger.info { "Creating new WireMock stub mapping" }
+                logger.info { "Creating new MockNest stub mapping" }
                 wireMockServer.runCatching {
                     val addedMapping = httpRequest.body?.let { body ->
                         // Convert body to string once
@@ -68,11 +68,10 @@ class WireMockAdminForwarder(
 
                         // Parse the mapping
                         val mapping = bodyString.toStubMapping()
-                        // Add the mapping to WireMock
+                        // Add the mapping to MockNest
                         addStubMapping(mapping)
                         // Check if mapping is persistent and save it
-                        saveStubMapping(mapping, bodyString)?.let { "Saved mapping $it" }
-                            ?: "Mapping ${mapping.id} not saved, persistent: ${mapping.isPersistent}"
+                        saveStubMapping(mapping, bodyString)
                     }
 
                     // Return the response
@@ -88,12 +87,12 @@ class WireMockAdminForwarder(
                 val mappingId = UUID.fromString(mappingIdAsString)
                 when (httpRequest.method) {
                     HttpMethod.GET -> {
-                        logger.info { "Retrieving WireMock mapping with ID: $mappingId" }
+                        logger.info { "Retrieving MockNest mapping with ID: $mappingId" }
                         HttpResponse(HttpStatusCode.valueOf(200), body = wireMockServer.getStubMapping(mappingId))
                     }
 
                     HttpMethod.PUT -> {
-                        logger.info { "Updating WireMock mapping with ID: $mappingId" }
+                        logger.info { "Updating MockNest mapping with ID: $mappingId" }
                         val updatedMapping = httpRequest.body?.let { body ->
                             // Convert body to string once
                             val bodyString = body.toString()
@@ -101,22 +100,21 @@ class WireMockAdminForwarder(
                             // Parse the mapping
                             val mapping = bodyString.toStubMapping()
 
-                            // Update the mapping in WireMock
+                            // Update the mapping in MockNest
                             wireMockServer.editStubMapping(mapping)
 
                             // Check if mapping is persistent and save it
-                            saveStubMapping(mapping, bodyString)?.let { "Updated mapping $it" }
-                                ?: "Mapping ${mapping.id} updated but not persisted, persistent: ${mapping.isPersistent}"
+                            saveStubMapping(mapping, bodyString)
 
                         }
                         HttpResponse(HttpStatusCode.valueOf(200), body = updatedMapping)
                     }
 
                     HttpMethod.DELETE -> {
-                        logger.info { "Deleting WireMock mapping with ID: $mappingId" }
+                        logger.info { "Deleting MockNest mapping with ID: $mappingId" }
                         wireMockServer.removeStubMapping(mappingId)
                         // Remove from persistent storage
-                        wireMockMappingRepository.deleteMapping(mappingIdAsString)
+                        objectStorage.delete(mappingIdAsString)
                         HttpResponse(HttpStatusCode.valueOf(200), body = "Stub mapping deleted successfully")
                     }
 
@@ -128,7 +126,7 @@ class WireMockAdminForwarder(
             }
 
             else -> {
-                logger.warn { "Unknown WireMock admin API request: $path" }
+                logger.warn { "Unknown MockNest admin API request: $path" }
                 HttpResponse(
                     HttpStatusCode.valueOf(404), body = "Unknown admin request: $path"
                 )
@@ -141,22 +139,22 @@ class WireMockAdminForwarder(
             HttpResponse(
                 HttpStatusCode.valueOf(400),
                 body = exception.message
-            ).also { logger.info { "WireMock error: $exception" } }
+            ).also { logger.info { "MockNest error: $exception" } }
 
         else -> HttpResponse(
             HttpStatusCode.valueOf(500),
             body = exception.message
-        ).also { logger.error(exception) { "WireMock error: $exception" } }
+        ).also { logger.error(exception) { "MockNest error: $exception" } }
     }
 
     private fun String.toStubMapping(): StubMapping = Json.getObjectMapper().readValue(this, StubMapping::class.java)
 
-    private fun saveStubMapping(mapping: StubMapping, bodyString: String, ): String? {
+    private fun saveStubMapping(mapping: StubMapping, bodyString: String, ): String {
         return mapping.runCatching {
             if (isPersistent) {
                 logger.info { "Saving persistent mapping with ID: $id" }
-                wireMockMappingRepository.saveMapping(id.toString(), bodyString)
-            } else null
+                objectStorage.save(id.toString(), bodyString).let { "Saved mapping $it" }
+            } else "Mapping ${mapping.id} not persistent"
         }.onFailure {
             logger.error(it) { "Failed to check or save persistent mapping: ${it.message}" }
         }.getOrThrow()

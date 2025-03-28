@@ -27,7 +27,7 @@ class MockNestFunctionsIntegrationTest {
         mockk<HttpRequestMessage<String>>(relaxed = true)
 
     @Test
-    fun `When mapped SF request then maps SF response in wiremock`() {
+    fun `When mapped SF request then maps SF response in MockNest`() {
         every { request.httpMethod } returns HttpMethod.POST
         every { request.body } returns "{\n" +
                 "    \"allOrNone\": true,\n" +
@@ -44,7 +44,7 @@ class MockNestFunctionsIntegrationTest {
                 "        }\n" +
                 "    ]\n" +
                 "}"
-        mockNestFunctions.forwardToWiremock(
+        mockNestFunctions.forwardClientRequest(
             request,
             "services/data/v59.0/composite",
             context
@@ -71,7 +71,7 @@ class MockNestFunctionsIntegrationTest {
         }
     """.trimIndent()
 
-        mockNestFunctions.forwardToWiremock(request, "invoices/PN2000000001/versions/latest", context)
+        mockNestFunctions.forwardClientRequest(request, "invoices/PN2000000001/versions/latest", context)
         verify {
             request
                 .createResponseBuilder(HttpStatus.valueOf(200))
@@ -79,10 +79,10 @@ class MockNestFunctionsIntegrationTest {
     }
 
     @Test
-    fun `When deleting a WireMock mapping then returns 200 status code`() {
+    fun `When deleting a MockNest mapping then returns 200 status code`() {
         every { request.httpMethod } returns HttpMethod.DELETE
 
-        mockNestFunctions.forwardToWiremockAdmin(
+        mockNestFunctions.forwardAdminRequest(
             request,
             "mappings/8c5db8b0-2db4-4ad7-a99f-38c9b00da3f7",
             context
@@ -102,7 +102,7 @@ class MockNestFunctionsIntegrationTest {
     fun `When retrieving near misses then returns 200 status code`() {
         every { request.httpMethod } returns HttpMethod.GET
 
-        mockNestFunctions.forwardToWiremockAdmin(
+        mockNestFunctions.forwardAdminRequest(
             request,
             "requests/unmatched/near-misses",
             context
@@ -119,10 +119,10 @@ class MockNestFunctionsIntegrationTest {
     }
 
     @Test
-    fun `When resetting WireMock mappings then returns 200 status code`() {
+    fun `When resetting MockNest mappings then returns 200 status code`() {
         every { request.httpMethod } returns HttpMethod.POST
 
-        mockNestFunctions.forwardToWiremockAdmin(
+        mockNestFunctions.forwardAdminRequest(
             request,
             "mappings/reset",
             context
