@@ -18,8 +18,8 @@ import org.springframework.http.HttpMethod as SpringHttpMethod
 
 @Component
 class MockNestFunctions(
-    private val handleClientRequest: HandleClientRequest,
-    private val handleAdminRequest: HandleAdminRequest,
+    // TODO: HandleClientRequest,
+    // TODO: HandleAdminRequest,
 ) {
 
     @FunctionName("RequestForwarder")
@@ -33,17 +33,9 @@ class MockNestFunctions(
         @BindingName("route") route: String?,
         context: ExecutionContext,
     ): HttpResponseMessage {
-        val response = handleClientRequest(
-            HttpRequest(
-                SpringHttpMethod.valueOf(request.httpMethod.name),
-                request.headers,
-                route,
-                request.queryParameters,
-                request.body
-            )
-        )
+        // TODO handle client azure
 
-        return buildResponse(request, response)
+        return buildResponse(request)
     }
 
     @FunctionName("Admin")
@@ -57,37 +49,20 @@ class MockNestFunctions(
         @BindingName("route") route: String?,
         context: ExecutionContext,
     ): HttpResponseMessage {
-        val response = handleAdminRequest(
-            route ?: "",
-            HttpRequest(
-                SpringHttpMethod.valueOf(request.httpMethod.name),
-                request.headers,
-                route,
-                request.queryParameters,
-                request.body
-            )
-        )
+        // TODO handle admin azure
 
-        return buildResponse(request, response)
+        return buildResponse(request)
     }
 
     private fun buildResponse(
         request: HttpRequestMessage<String>,
-        response: HttpResponse,
+        //TODO: take response
     ): HttpResponseMessage {
         return request
-            .createResponseBuilder(HttpStatus.valueOf(response.httpStatusCode.value()))
-            .let { responseBuilder ->
-                var builder = responseBuilder
-                response.headers?.forEach { header ->
-                    header.value.forEach {
-                        builder = builder.header(header.key, it)
-                    }
-                }
-                builder
-            }
-            .body(response.body)
+            .createResponseBuilder(HttpStatus.valueOf(200))
+            .body("Hello VoxxedDays Amsterdam 2025!")
             .build()
+        // TODO: map response azure
     }
 
 }

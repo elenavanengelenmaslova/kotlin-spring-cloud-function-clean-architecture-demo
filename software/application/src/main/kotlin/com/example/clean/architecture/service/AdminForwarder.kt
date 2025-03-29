@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger {}
 @Component
 class AdminForwarder(
     private val wireMockServer: WireMockServer,
-    private val objectStorage: ObjectStorageInterface,
+    // TODO: ObjectStorageInterface,
 ) : HandleAdminRequest {
 
     override fun invoke(
@@ -47,14 +47,8 @@ class AdminForwarder(
                 logger.info { "Resetting MockNest mappings" }
                 wireMockServer.runCatching {
                     resetToDefaultMappings()
-
                     // Delete all mappings from storage
-                    val storedMappings = objectStorage.list()
-                    storedMappings.forEach { mappingId ->
-                        logger.info { "Deleting stored MockNest mapping with ID: $mappingId" }
-                        objectStorage.delete(mappingId)
-                    }
-
+                    // TODO: delete stub mappings
                     HttpResponse(HttpStatusCode.valueOf(200), body = "Mappings reset successfully")
                 }.getOrElse { handleAdminException(it) }
             }
@@ -71,7 +65,7 @@ class AdminForwarder(
                         // Add the mapping to MockNest
                         addStubMapping(mapping)
                         // Check if mapping is persistent and save it
-                        saveStubMapping(mapping, bodyString)
+                        // TODO: save stub mapping
                     }
 
                     // Return the response
@@ -104,7 +98,7 @@ class AdminForwarder(
                             wireMockServer.editStubMapping(mapping)
 
                             // Check if mapping is persistent and save it
-                            saveStubMapping(mapping, bodyString)
+                            // TODO: Save stub mapping
 
                         }
                         HttpResponse(HttpStatusCode.valueOf(200), body = updatedMapping)
@@ -114,7 +108,7 @@ class AdminForwarder(
                         logger.info { "Deleting MockNest mapping with ID: $mappingId" }
                         wireMockServer.removeStubMapping(mappingId)
                         // Remove from persistent storage
-                        objectStorage.delete(mappingIdAsString)
+                        // TODO: Delete mapping
                         HttpResponse(HttpStatusCode.valueOf(200), body = "Stub mapping deleted successfully")
                     }
 
@@ -149,14 +143,5 @@ class AdminForwarder(
 
     private fun String.toStubMapping(): StubMapping = Json.getObjectMapper().readValue(this, StubMapping::class.java)
 
-    private fun saveStubMapping(mapping: StubMapping, bodyString: String, ): String {
-        return mapping.runCatching {
-            if (isPersistent) {
-                logger.info { "Saving persistent mapping with ID: $id" }
-                objectStorage.save(id.toString(), bodyString).let { "Saved mapping $it" }
-            } else "Mapping ${mapping.id} not persistent"
-        }.onFailure {
-            logger.error(it) { "Failed to check or save persistent mapping: ${it.message}" }
-        }.getOrThrow()
-    }
+    // TODO: save stub mapping
 }
