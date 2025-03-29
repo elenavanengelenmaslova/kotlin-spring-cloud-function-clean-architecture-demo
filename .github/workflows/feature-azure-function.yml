@@ -1,9 +1,10 @@
 name: Azure Function Feature
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/* ]
     paths-ignore:
       - '**.md'
+      - 'docs'
       - 'cdk/**'
       - 'software/infrastructure/aws/**'
   workflow_dispatch:

@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Profile
 
 @Configuration
 @Profile("!local")
-class S3Config(
-    @Value("\${aws.s3.bucket-name}") private val backetName: String,
-) {
+class S3Config {
 
     @Bean
     fun s3Client(): S3Client = S3Client { region = "eu-west-1" }

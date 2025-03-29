@@ -65,7 +65,7 @@ jobs:
         config:
           [
             {
-              component-name: "Spring Clean Architecture Kotlin Lambda",
+              component-name: "Demo Spring Clean Architecture Kotlin Lambda",
               stack-name: "Demo-Spring-Clean-Architecture-Lambda",
             }
           ]
