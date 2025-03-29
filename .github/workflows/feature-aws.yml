@@ -1,7 +1,7 @@
-name: Kotlin Lambda infra CI/CD Feature
+name: AWS Lambda infra CI/CD Feature
 on:
   push:
-    branches: [ feature/* ]
+    branches: [ xxfeature/* ]
     paths-ignore:
       - '**.md'
       - 'cdk/azure/**'

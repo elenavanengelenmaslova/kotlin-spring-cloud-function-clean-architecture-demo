@@ -1,4 +1,4 @@
-name: Kotlin Lambda infra CI/CD Main
+name: AWS Lambda infra CI/CD Main
 on:
   push:
     branches: [ main ]
