@@ -2,7 +2,6 @@ package com.example.clean.architecture.service
 
 import com.example.clean.architecture.model.HttpRequest
 import com.example.clean.architecture.model.HttpResponse
-import com.example.clean.architecture.persistence.ObjectStorageInterface
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.common.InvalidInputException
 import com.github.tomakehurst.wiremock.common.Json
