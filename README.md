@@ -29,7 +29,7 @@ Client --> Call
 ```
 
 # Solution Architecture
-![MockNest.png](docs/MockNest.png)
+![SolutionDesign.png](docs/SolutionDesign.png)
 
 ## Project Structure
 
