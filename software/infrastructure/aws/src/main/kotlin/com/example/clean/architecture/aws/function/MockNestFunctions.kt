@@ -17,21 +17,40 @@ private const val MOCKNEST_PREFIX = "/mocknest/"
 
 @Configuration
 class MockNestFunctions(
-    // TODO: HandleClientRequest,
-    // TODO: HandleAdminRequest,
+    private val handleClientRequest: HandleClientRequest,
+    private val handleAdminRequest: HandleAdminRequest,
 ) {
     @Bean
     fun router(): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
         return Function { event ->
-            APIGatewayProxyResponseEvent()
-                .withStatusCode(200)
-                .withBody("Hello VoxxedDays Amsterdam 2025!")
-            // TODO: handle request aws
+            with(event) {
+                logger.info { "MockNest request: $httpMethod $path $headers" }
+                if (path.startsWith(ADMIN_PREFIX)) {
+                    val adminPath = path.removePrefix(ADMIN_PREFIX)
+                    handleAdminRequest(adminPath, createHttpRequest(adminPath))
+                } else {
+                    handleClientRequest(createHttpRequest(path.removePrefix(MOCKNEST_PREFIX)))
+                }
+            }.let {
+                APIGatewayProxyResponseEvent()
+                    .withStatusCode(it.httpStatusCode.value())
+                    .withHeaders(it.headers?.toSingleValueMap())
+                    .withBody(it.body?.toString().orEmpty())
+            }
 
         }
     }
 
-    // TODO map request aws
+    private fun APIGatewayProxyRequestEvent.createHttpRequest(path: String): HttpRequest {
+        val request = HttpRequest(
+            method = HttpMethod.valueOf(httpMethod),
+            headers = headers,
+            path = path,
+            queryParameters = queryStringParameters.orEmpty(),
+            body = body
+        )
+        return request
+    }
 }
 
 
