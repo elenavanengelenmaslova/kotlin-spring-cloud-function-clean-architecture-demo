@@ -71,7 +71,7 @@ kotlin-spring-cloud-function-clean-architecture-example/
 
 For further reference, please consider the following sections:
 
-* [**Voxxed Days Amsterdam (April 3, 2025)**](https://www.youtube.com/watch?v=wz0GQbkrr1Q&list=PLRsbF2sD7JVpZ3O01elefwrp9l4yBWoXu&index=45&pp=iAQB): *Clean Architecture for Serverless: Business Logic You Can Take Anywhere*
+* [**Live Coding Featuring This Imlementation @Voxxed Days Amsterdam (April 3, 2025)**](https://www.youtube.com/watch?v=wz0GQbkrr1Q&list=PLRsbF2sD7JVpZ3O01elefwrp9l4yBWoXu&index=45&pp=iAQB): *Clean Architecture for Serverless: Business Logic You Can Take Anywhere*
 * [Official Gradle documentation](https://docs.gradle.org)
 * [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.1.4/gradle-plugin/reference/html/)
 * [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.1.4/gradle-plugin/reference/html/#build-image)
