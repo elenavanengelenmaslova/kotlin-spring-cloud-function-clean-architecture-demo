@@ -20,6 +20,3 @@ application {
 tasks.named("run") {
     dependsOn(":infra-aws:shadowJar")
 }
-repositories {
-    mavenCentral()
-}

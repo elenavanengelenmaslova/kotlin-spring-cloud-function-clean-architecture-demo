@@ -13,7 +13,3 @@ dependencies {
 application {
     mainClass.set("com.example.cdk.azure.AppKt")
 }
-
-repositories {
-    mavenCentral()
-}
