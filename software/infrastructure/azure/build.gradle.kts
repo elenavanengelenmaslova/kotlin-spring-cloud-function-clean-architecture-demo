@@ -1,32 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.3.9"
-    id("io.spring.dependency-management") version "1.1.7"
+    id("org.springframework.boot")
     id("com.microsoft.azure.azurefunctions") version "1.13.0"
     kotlin("plugin.spring")
-    java
 }
 
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 extra["springCloudVersion"] = "2022.0.4"
-
-// Ensure all tasks use Java 17
-tasks.withType<JavaCompile>().configureEach {
-    javaCompiler.set(javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    })
-}
 
 dependencies {
     implementation(project(":domain"))
@@ -123,7 +106,7 @@ azurefunctions {
     resourceGroup = "DefaultResourceGroup-WEU"
     appName = "demo-spring-clean-architecture-fun"
     region = "westeurope"
-    setAppSettings(mapOf(
+    appSettings = mapOf(
         "WEBSITE_RUN_FROM_PACKAGE" to "1"
-    ))
+    )
 }
