@@ -19,8 +19,6 @@ import com.hashicorp.cdktf.providers.azurerm.storage_account.StorageAccount
 import com.hashicorp.cdktf.providers.azurerm.storage_account.StorageAccountConfig
 import com.hashicorp.cdktf.providers.azurerm.storage_container.StorageContainer
 import com.hashicorp.cdktf.providers.azurerm.storage_container.StorageContainerConfig
-import com.hashicorp.cdktf.providers.azurerm.storage_table.StorageTable
-import com.hashicorp.cdktf.providers.azurerm.storage_table.StorageTableConfig
 import software.constructs.Construct
 
 
@@ -158,7 +156,7 @@ class AzureStack(scope: Construct, id: String) :
                     LinuxFunctionAppSiteConfig.builder()
                         .applicationStack(
                             LinuxFunctionAppSiteConfigApplicationStack.builder()
-                                .javaVersion("17")
+                                .javaVersion("21")
                                 .build()
                         ).build()
                 )

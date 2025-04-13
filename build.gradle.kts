@@ -37,15 +37,18 @@ subprojects {
         }
 
         tasks.withType<KotlinJvmCompile>().configureEach {
-            compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
     // Only apply Java config to projects that use the Java plugin
     plugins.withId("java") {
         extensions.configure<JavaPluginExtension> {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            }
         }
 
         tasks.withType<Test>().configureEach {

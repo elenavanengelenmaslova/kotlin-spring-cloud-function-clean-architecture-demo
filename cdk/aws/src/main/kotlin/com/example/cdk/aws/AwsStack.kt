@@ -165,7 +165,7 @@ class AwsStack(
             LambdaFunctionConfig.builder()
                 .functionName("Demo-Spring-Clean-Architecture-Fun")
                 .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker")
-                .runtime("java17")
+                .runtime("java21")
                 .s3Bucket("lambda-deployment-clean-architecture-example")
                 .s3Key("demo-aws-function.jar")
                 .sourceCodeHash(
@@ -179,7 +179,7 @@ class AwsStack(
                     )
                 )
                 .memorySize(1024)
-                .snapStart { "PublishedVersions" }
+                //.snapStart { "PublishedVersions" }
                 .environment(
                     LambdaFunctionEnvironment.builder()
                         .variables(
