@@ -9,7 +9,7 @@ plugins {
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 
-extra["springCloudVersion"] = "2022.0.4"
+extra["springCloudVersion"] = "2023.0.5"
 
 dependencies {
     implementation(project(":domain"))
