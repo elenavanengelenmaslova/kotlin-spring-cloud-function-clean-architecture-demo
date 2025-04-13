@@ -1,12 +1,11 @@
 plugins {
     kotlin("plugin.spring")
-    id("org.springframework.boot") version "3.3.9"
+    id("org.springframework.boot")
 }
 
 springBoot {
     mainClass.set("com.example.clean.architecture.Application")
 }
-apply(plugin = "io.spring.dependency-management")
 
 dependencies {
     implementation(project(":domain"))
