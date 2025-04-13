@@ -1,6 +1,7 @@
 # Getting Started
 
 ## Use cases
+_View with PlantUML IntelliJ plugin_
 ```plantuml
 
 @startuml
@@ -13,6 +14,7 @@ rectangle "MockNest\n(Serverless WireMock)" {
   (Update Mock) as Update
   (Delete Mock) as Delete
   (Reset All Mocks) as Reset
+  (View Near Misses) as NearMisses
   (Call Mocked API) as Call
 }
 
@@ -20,6 +22,7 @@ Admin --> Create
 Admin --> Update
 Admin --> Delete
 Admin --> Reset
+Admin --> NearMisses
 
 Client --> Call
 @enduml
@@ -63,12 +66,6 @@ kotlin-spring-cloud-function-clean-architecture-example/
         └──build.gradle.kts
 
 ```
-# Delete resources
-1. IAM Policy `Spring-Clean-Architecture-Fun-Policy`
-2. Iam Role `Spring-Clean-Architecture-Fun-Role`
-3. Table `Products-Clean-Architecture-Example`
-4. Lambda `Spring-Clean-Architecture-Fun`
-
 
 ### Reference Documentation
 
