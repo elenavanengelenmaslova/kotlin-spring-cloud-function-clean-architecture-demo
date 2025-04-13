@@ -20,3 +20,14 @@ cdktf get
 cdktf synth
 
 echo "✅ Terraform generated in: cdk/aws/cdktf.out/stacks"
+
+echo "Cleaning"
+
+rm -rf src/main/java
+rm -rf src/main/resources
+
+echo "✅ Done!"
+
+
+
+

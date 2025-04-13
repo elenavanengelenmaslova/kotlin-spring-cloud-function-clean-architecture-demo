@@ -211,12 +211,9 @@
         "handler": "org.springframework.cloud.function.adapter.aws.FunctionInvoker",
         "memory_size": 1024,
         "role": "${aws_iam_role.Demo-Spring-Clean-Architecture-Fun-Role.arn}",
-        "runtime": "java17",
+        "runtime": "java21",
         "s3_bucket": "lambda-deployment-clean-architecture-example",
         "s3_key": "demo-aws-function.jar",
-        "snap_start": {
-          "apply_on": "PublishedVersions"
-        },
         "source_code_hash": "${filebase64sha256(\"../../../../../build/dist/demo-aws-function.jar\")}",
         "timeout": 120
       }
