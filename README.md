@@ -1,40 +1,7 @@
-# Getting Started
-
-## Use cases
-_View with PlantUML IntelliJ plugin_
-```plantuml
-
-@startuml
-
-actor "Mock Admin" as Admin
-actor "Client App" as Client
-
-rectangle "MockNest\n(Serverless WireMock)" {
-  (Create Mock) as Create
-  (Update Mock) as Update
-  (Delete Mock) as Delete
-  (Reset All Mocks) as Reset
-  (View Near Misses) as NearMisses
-  (Call Mocked API) as Call
-}
-
-Admin --> Create
-Admin --> Update
-Admin --> Delete
-Admin --> Reset
-Admin --> NearMisses
-
-Client --> Call
-@enduml
+# Clean Architecture
 
 
-
-```
-
-# Solution Architecture
-![SolutionDesign.png](docs/SolutionDesign.png)
-
-## Project Structure
+# Project Structure
 
 ```
 kotlin-spring-cloud-function-clean-architecture-example/
@@ -67,7 +34,46 @@ kotlin-spring-cloud-function-clean-architecture-example/
 
 ```
 
-### Reference Documentation
+# Example
+## Use cases
+_View with PlantUML IntelliJ plugin_
+```plantuml
+
+@startuml
+
+actor "Mock Admin" as Admin
+actor "Client App" as Client
+
+rectangle "MockNest\n(Serverless WireMock)" {
+  (Create Mock) as Create
+  (Update Mock) as Update
+  (Delete Mock) as Delete
+  (Reset All Mocks) as Reset
+  (View Near Misses) as NearMisses
+  (Call Mocked API) as Call
+}
+
+Admin --> Create
+Admin --> Update
+Admin --> Delete
+Admin --> Reset
+Admin --> NearMisses
+
+Client --> Call
+@enduml
+
+
+
+```
+
+## Solution Architecture
+![SolutionDesign.png](docs/SolutionDesign.png)
+
+# Spring Cloud Function
+
+# Getting Started
+
+## Reference Documentation
 
 For further reference, please consider the following sections:
 
