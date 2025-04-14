@@ -20,3 +20,7 @@ application {
 tasks.named("run") {
     dependsOn(":infra-aws:shadowJar")
 }
+tasks.withType<JavaCompile>().configureEach {
+    options.isFork = true
+    options.forkOptions.jvmArgs = listOf("-Xmx4g")
+}
