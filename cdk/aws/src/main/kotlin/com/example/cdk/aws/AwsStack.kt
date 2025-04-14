@@ -50,8 +50,7 @@ class AwsStack(
 
     init {
         // Get the region from environment variables
-        val region =
-            System.getenv("DEPLOY_TARGET_REGION")
+        val region = "\${DEPLOY_TARGET_REGION}"
 
         // Configure the AWS Provider
         AwsProvider(
@@ -241,7 +240,7 @@ class AwsStack(
                 .httpMethod(method.httpMethod)
                 .integrationHttpMethod("POST")
                 .type("AWS_PROXY")
-                .uri("arn:aws:apigateway:${System.getenv("DEPLOY_TARGET_REGION")}:lambda:path/2015-03-31/functions/${lambdaFunction.arn}/invocations")
+                .uri("arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${lambdaFunction.arn}/invocations")
                 .build()
         )
 
