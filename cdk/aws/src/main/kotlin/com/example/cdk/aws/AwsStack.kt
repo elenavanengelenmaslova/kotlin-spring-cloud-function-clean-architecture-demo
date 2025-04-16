@@ -1,9 +1,6 @@
 package com.example.cdk.aws
 
-import com.hashicorp.cdktf.Fn
-import com.hashicorp.cdktf.S3Backend
-import com.hashicorp.cdktf.S3BackendConfig
-import com.hashicorp.cdktf.TerraformStack
+import com.hashicorp.cdktf.*
 import com.hashicorp.cdktf.providers.aws.api_gateway_api_key.ApiGatewayApiKey
 import com.hashicorp.cdktf.providers.aws.api_gateway_api_key.ApiGatewayApiKeyConfig
 import com.hashicorp.cdktf.providers.aws.api_gateway_deployment.ApiGatewayDeployment
@@ -50,7 +47,15 @@ class AwsStack(
 
     init {
         // Get the region from environment variables
-        val region = "\${DEPLOY_TARGET_REGION}"
+        val regionVar = TerraformVariable(
+            this,
+            "DEPLOY_TARGET_REGION",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("The AWS region")
+                .build()
+        )
+        val region = regionVar.stringValue
 
         // Configure the AWS Provider
         AwsProvider(
