@@ -18,7 +18,7 @@ on:
 env:
   # Supply target AWS account here
   DEPLOY_TARGET_ACCOUNT: ${{ secrets.aws_account_id }}
-  TF_VAR_DEPLOY_TARGET_REGION: ${{ inputs.aws_region }}
+  DEPLOY_TARGET_REGION: ${{ inputs.aws_region }}
   BUILD_NO: ${{ github.run_number }}
 
 jobs:
@@ -110,7 +110,8 @@ jobs:
       - name: Initialize Terraform and Read Remote State
         run: |
           cd ${GITHUB_WORKSPACE}/cdk/aws/cdktf.out/stacks/${{ matrix.config.stack-name }}
-          terraform init -reconfigure
+          terraform init -reconfigure \
+              -backend-config="region=${DEPLOY_TARGET_REGION}" \
           terraform plan -out=tfplan
 
       - name: Apply Only Relevant Changes

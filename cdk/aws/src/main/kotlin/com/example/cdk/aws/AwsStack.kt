@@ -46,17 +46,18 @@ class AwsStack(
 ) : TerraformStack(scope, id) {
 
     init {
-        // Get the region from environment variables
-        val regionVar = TerraformVariable(
-            this,
-            "DEPLOY_TARGET_REGION",
-            TerraformVariableConfig.builder()
-                .type("string")
-                .description("The AWS region")
-                .build()
-        )
-        val region = regionVar.stringValue
+//        // Get the region from environment variables
+//        val regionVar = TerraformVariable(
+//            this,
+//            "DEPLOY_TARGET_REGION",
+//            TerraformVariableConfig.builder()
+//                .type("string")
+//                .description("The AWS region")
+//                .build()
+//        )
+//        val region = regionVar.stringValue
 
+        val region = "\${region}"
         // Configure the AWS Provider
         AwsProvider(
             this,
