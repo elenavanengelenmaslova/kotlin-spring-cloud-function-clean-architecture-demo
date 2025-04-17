@@ -111,7 +111,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/cdk/aws/cdktf.out/stacks/${{ matrix.config.stack-name }}
           terraform init -reconfigure -backend-config="region=${DEPLOY_TARGET_REGION}"
-          terraform plan -out=tfplan
+          terraform plan -var="DEPLOY_TARGET_REGION=${DEPLOY_TARGET_REGION}" -out=tfplan
 
       - name: Apply Only Relevant Changes
         run: |
