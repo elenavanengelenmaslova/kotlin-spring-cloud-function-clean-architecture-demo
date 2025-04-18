@@ -24,14 +24,6 @@ class AzureStack(scope: Construct, id: String) :
     TerraformStack(scope, id) {
 
     init {
-        val resourceGroupNameVar = TerraformVariable(
-            this,
-            "AZURE_RESOURCE_GROUP_NAME",
-            TerraformVariableConfig.builder()
-                .type("string")
-                .description("Resource group name")
-                .build()
-        )
         val azureClientIdVar = TerraformVariable(
             this,
             "AZURE_CLIENT_ID",

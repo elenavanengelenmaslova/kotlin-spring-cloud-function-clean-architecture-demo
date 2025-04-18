@@ -17,7 +17,7 @@
             "uniqueId": "ExistingResourceGroup"
           }
         },
-        "name": "${resource_group_name}"
+        "name": "${var.AZURE_RESOURCE_GROUP_NAME}"
       }
     }
   },
@@ -179,8 +179,32 @@
     }
   },
   "variable": {
+    "AZURE_CLIENT_ID": {
+      "description": "Azure client ID",
+      "type": "string"
+    },
+    "AZURE_CLIENT_SECRET": {
+      "description": "Azure client secret",
+      "type": "string"
+    },
+    "AZURE_RESOURCE_GROUP_NAME": {
+      "description": "Azure resource group name",
+      "type": "string"
+    },
     "AZURE_STORAGE_ACCOUNT_ACCESS_KEY": {
-      "description": "The AWS region",
+      "description": "Storage account access key",
+      "type": "string"
+    },
+    "AZURE_STORAGE_ACCOUNT_NAME": {
+      "description": "Azure storage account name",
+      "type": "string"
+    },
+    "AZURE_SUBSCRIPTION_ID": {
+      "description": "Azure subscription ID",
+      "type": "string"
+    },
+    "AZURE_TENANT_ID": {
+      "description": "Azure tenant ID",
       "type": "string"
     }
   }

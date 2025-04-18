@@ -54,7 +54,7 @@ class AwsStack(
                 .description("The AWS region")
                 .build()
         )
-        val region = "\${region}"
+        val region = regionVar.stringValue
 
         val accountVar = TerraformVariable(
             this,
@@ -77,7 +77,7 @@ class AwsStack(
         S3Backend(
             this,
             S3BackendConfig.builder()
-                .region(region)
+                .region("\${region}")
                 .bucket("kotlin-lambda-terraform-state")
                 .key("demo-terraform-cdk/terraform.tfstate")
                 .encrypt(true).build()
