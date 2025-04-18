@@ -1,0 +1,16 @@
+{
+  "stacks": {
+    "Demo-Azure-Clean-Architecture": {
+      "annotations": [
+      ],
+      "constructPath": "Demo-Azure-Clean-Architecture",
+      "dependencies": [
+      ],
+      "name": "Demo-Azure-Clean-Architecture",
+      "stackMetadataPath": "stacks/Demo-Azure-Clean-Architecture/metadata.json",
+      "synthesizedStackPath": "stacks/Demo-Azure-Clean-Architecture/cdk.tf.json",
+      "workingDirectory": "stacks/Demo-Azure-Clean-Architecture"
+    }
+  },
+  "version": "0.20.12"
+}

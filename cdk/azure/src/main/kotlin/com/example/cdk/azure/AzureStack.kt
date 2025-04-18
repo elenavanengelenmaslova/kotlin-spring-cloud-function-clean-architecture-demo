@@ -1,8 +1,6 @@
 package com.example.cdk.azure
 
-import com.hashicorp.cdktf.AzurermBackend
-import com.hashicorp.cdktf.AzurermBackendConfig
-import com.hashicorp.cdktf.TerraformStack
+import com.hashicorp.cdktf.*
 import com.hashicorp.cdktf.providers.azurerm.application_insights.ApplicationInsights
 import com.hashicorp.cdktf.providers.azurerm.application_insights.ApplicationInsightsConfig
 import com.hashicorp.cdktf.providers.azurerm.data_azurerm_resource_group.DataAzurermResourceGroup
@@ -26,29 +24,28 @@ class AzureStack(scope: Construct, id: String) :
     TerraformStack(scope, id) {
 
     init {
-        val resourceGroupName =
-            "DefaultResourceGroup-WEU"
+        val resourceGroupName = "\${resource_group_name}"
         val functionAppName =
             "demo-spring-clean-architecture-fun"
         val appServicePlanName =
             "demo_serverless_app_plan"
-        val location = "westeurope"
+
+        val storageAccountName = "\${storage_account_name}"
 
         // Configure the Azure Provider
         AzurermProvider(
             this,
             "Azure",
             AzurermProviderConfig.builder()
-                .subscriptionId(System.getenv("AZURE_SUBSCRIPTION_ID"))
-                .clientId(System.getenv("AZURE_CLIENT_ID"))
-                .clientSecret(System.getenv("AZURE_CLIENT_SECRET"))
-                .tenantId(System.getenv("AZURE_TENANT_ID"))
+                .subscriptionId("\${subscription_id}")
+                .clientId("\${client_id}")
+                .clientSecret("\${client_secret}")
+                .tenantId("\${tenant_id}")
                 .features(
                     mutableListOf(
-                        AzurermProviderFeatures.builder()
-                            .build()
+                        AzurermProviderFeatures.builder().build()
                     )
-                )  // Empty features block as required
+                )
                 .build()
         )
 
@@ -57,14 +54,14 @@ class AzureStack(scope: Construct, id: String) :
         AzurermBackend(
             this,
             AzurermBackendConfig.builder()
-                .resourceGroupName(resourceGroupName)
-                .storageAccountName(System.getenv("AZURE_STORAGE_ACCOUNT_NAME"))
+                .resourceGroupName("\${resource_group_name}")
+                .storageAccountName("\${storage_account_name}")
                 .containerName("vintikterraformstorage")
                 .key("demo-kscfunction/terraform.tfstate")
-                .clientId(System.getenv("AZURE_CLIENT_ID"))
-                .clientSecret(System.getenv("AZURE_CLIENT_SECRET"))
-                .subscriptionId(System.getenv("AZURE_SUBSCRIPTION_ID"))
-                .tenantId(System.getenv("AZURE_TENANT_ID"))
+                .clientId("\${client_id}")
+                .clientSecret("\${client_secret}")
+                .subscriptionId("\${subscription_id}")
+                .tenantId("\${tenant_id}")
                 .build()
         )
         // Reference the existing Resource Group
@@ -110,7 +107,7 @@ class AzureStack(scope: Construct, id: String) :
                 .resourceGroupName(resourceGroup.name)
                 .osType("Linux")
                 .skuName("Y1")
-                .location(location)
+                .location(resourceGroup.location)
                 .build()
         )
 
@@ -120,18 +117,20 @@ class AzureStack(scope: Construct, id: String) :
             ApplicationInsightsConfig.builder()
                 .name("demo-spring-cloud-app-insights")
                 .resourceGroupName(resourceGroup.name)
-                .location(location)
+                .location(resourceGroup.location)
                 .applicationType("java")
                 .build()
         )
+        val storageAccountAccessKeyVar = TerraformVariable(
+            this,
+            "AZURE_STORAGE_ACCOUNT_ACCESS_KEY",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("The AWS region")
+                .build()
+        )
 
-        val storageAccountName =
-            System.getenv("AZURE_STORAGE_ACCOUNT_NAME")
-                ?: "functionpackages"
-
-        val storageAccountAccessKey =
-            System.getenv("AZURE_STORAGE_ACCOUNT_ACCESS_KEY")
-        checkNotNull(storageAccountAccessKey)
+        val storageAccountAccessKey = storageAccountAccessKeyVar.stringValue
 
         // Create the Function App
         val functionApp = LinuxFunctionApp(
@@ -146,7 +145,7 @@ class AzureStack(scope: Construct, id: String) :
                 )
                 .name(functionAppName)
                 .resourceGroupName(resourceGroup.name)
-                .location(location)
+                .location(resourceGroup.location)
                 .servicePlanId(servicePlan.id)
                 .storageAccountName(storageAccountName)
                 .storageAccountAccessKey(

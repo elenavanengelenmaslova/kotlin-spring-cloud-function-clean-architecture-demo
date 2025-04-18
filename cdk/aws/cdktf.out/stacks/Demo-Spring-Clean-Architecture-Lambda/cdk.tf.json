@@ -11,7 +11,7 @@
   "provider": {
     "aws": [
       {
-        "region": "${var.DEPLOY_TARGET_REGION}"
+        "region": "${region}"
       }
     ],
     "random": [
@@ -60,7 +60,7 @@
         "resource_id": "${aws_api_gateway_resource.Demo-Spring-Clean-Architecture-Resource.id}",
         "rest_api_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}",
         "type": "AWS_PROXY",
-        "uri": "arn:aws:apigateway:${var.DEPLOY_TARGET_REGION}:lambda:path/2015-03-31/functions/${aws_lambda_function.Demo-Spring-Clean-Architecture-Fun.arn}/invocations"
+        "uri": "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${aws_lambda_function.Demo-Spring-Clean-Architecture-Fun.arn}/invocations"
       }
     },
     "aws_api_gateway_method": {
@@ -229,7 +229,7 @@
         "action": "lambda:InvokeFunction",
         "function_name": "${aws_lambda_function.Demo-Spring-Clean-Architecture-Fun.function_name}",
         "principal": "apigateway.amazonaws.com",
-        "source_arn": "arn:aws:execute-api:eu-west-1:021259937026:${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}/*/${aws_api_gateway_method.Demo-Spring-Clean-Architecture-Method.http_method}/${aws_api_gateway_resource.Demo-Spring-Clean-Architecture-Resource.path_part}"
+        "source_arn": "arn:aws:execute-api:${region}:${var.DEPLOY_TARGET_ACCOUNT}:${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}/*/${aws_api_gateway_method.Demo-Spring-Clean-Architecture-Method.http_method}/${aws_api_gateway_resource.Demo-Spring-Clean-Architecture-Resource.path_part}"
       }
     },
     "aws_s3_bucket": {
@@ -264,7 +264,7 @@
         "bucket": "kotlin-lambda-terraform-state",
         "encrypt": true,
         "key": "demo-terraform-cdk/terraform.tfstate",
-        "region": "${var.DEPLOY_TARGET_REGION}"
+        "region": "${region}"
       }
     },
     "required_providers": {
@@ -279,7 +279,7 @@
     }
   },
   "variable": {
-    "DEPLOY_TARGET_REGION": {
+    "DEPLOY_TARGET_ACCOUNT": {
       "description": "The AWS region",
       "type": "string"
     }

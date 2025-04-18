@@ -1,4 +1,4 @@
-name: Standard CI/CD workflow for Terraform CDK Kotlin Lambda example
+name: Standard CI/CD workflow for AWS Lambda
 
 on:
   workflow_call:
