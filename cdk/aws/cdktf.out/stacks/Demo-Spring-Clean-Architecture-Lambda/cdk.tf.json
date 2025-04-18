@@ -280,6 +280,10 @@
   },
   "variable": {
     "DEPLOY_TARGET_ACCOUNT": {
+      "description": "The AWS account",
+      "type": "string"
+    },
+    "DEPLOY_TARGET_REGION": {
       "description": "The AWS region",
       "type": "string"
     }

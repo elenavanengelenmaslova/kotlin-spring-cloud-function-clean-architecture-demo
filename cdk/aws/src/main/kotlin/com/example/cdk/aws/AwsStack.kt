@@ -46,6 +46,14 @@ class AwsStack(
 ) : TerraformStack(scope, id) {
 
     init {
+        val regionVar = TerraformVariable(
+            this,
+            "DEPLOY_TARGET_REGION",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("The AWS region")
+                .build()
+        )
         val region = "\${region}"
 
         val accountVar = TerraformVariable(
@@ -53,7 +61,7 @@ class AwsStack(
             "DEPLOY_TARGET_ACCOUNT",
             TerraformVariableConfig.builder()
                 .type("string")
-                .description("The AWS region")
+                .description("The AWS account")
                 .build()
         )
         val account = accountVar.stringValue

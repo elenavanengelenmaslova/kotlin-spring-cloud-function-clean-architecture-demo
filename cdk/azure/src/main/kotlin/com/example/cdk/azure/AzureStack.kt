@@ -24,7 +24,69 @@ class AzureStack(scope: Construct, id: String) :
     TerraformStack(scope, id) {
 
     init {
-        val resourceGroupName = "\${resource_group_name}"
+        val resourceGroupNameVar = TerraformVariable(
+            this,
+            "AZURE_RESOURCE_GROUP_NAME",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Resource group name")
+                .build()
+        )
+        val azureClientIdVar = TerraformVariable(
+            this,
+            "AZURE_CLIENT_ID",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Azure client ID")
+                .build()
+        )
+
+        val azureClientSecretVar = TerraformVariable(
+            this,
+            "AZURE_CLIENT_SECRET",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Azure client secret")
+                .build()
+        )
+
+        val azureSubscriptionIdVar = TerraformVariable(
+            this,
+            "AZURE_SUBSCRIPTION_ID",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Azure subscription ID")
+                .build()
+        )
+
+        val azureTenantIdVar = TerraformVariable(
+            this,
+            "AZURE_TENANT_ID",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Azure tenant ID")
+                .build()
+        )
+
+        val azureStorageAccountNameVar = TerraformVariable(
+            this,
+            "AZURE_STORAGE_ACCOUNT_NAME",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Azure storage account name")
+                .build()
+        )
+
+        val azureResourceGroupNameVar = TerraformVariable(
+            this,
+            "AZURE_RESOURCE_GROUP_NAME",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("Azure resource group name")
+                .build()
+        )
+
+        val resourceGroupName = azureResourceGroupNameVar.stringValue
         val functionAppName =
             "demo-spring-clean-architecture-fun"
         val appServicePlanName =
@@ -126,7 +188,7 @@ class AzureStack(scope: Construct, id: String) :
             "AZURE_STORAGE_ACCOUNT_ACCESS_KEY",
             TerraformVariableConfig.builder()
                 .type("string")
-                .description("The AWS region")
+                .description("Storage account access key")
                 .build()
         )
 

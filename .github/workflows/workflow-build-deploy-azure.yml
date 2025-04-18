@@ -83,7 +83,14 @@ jobs:
             -backend-config="client_secret=${AZURE_CLIENT_SECRET}" \
             -backend-config="subscription_id=${AZURE_SUBSCRIPTION_ID}" \
             -backend-config="tenant_id=${AZURE_TENANT_ID}"
-          terraform plan -out=tfplan
+          terraform plan \
+            -var="AZURE_CLIENT_ID=${AZURE_CLIENT_ID}" \
+            -var="AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}" \
+            -var="AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}" \
+            -var="AZURE_TENANT_ID=${AZURE_TENANT_ID}" \
+            -var="AZURE_STORAGE_ACCOUNT_NAME=${AZURE_STORAGE_ACCOUNT_NAME}" \
+            -var="AZURE_RESOURCE_GROUP_NAME=${AZURE_RESOURCE_GROUP_NAME}" \
+            -out=tfplan
           terraform apply -auto-approve tfplan
 
 
