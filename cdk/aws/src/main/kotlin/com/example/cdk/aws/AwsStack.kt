@@ -46,18 +46,17 @@ class AwsStack(
 ) : TerraformStack(scope, id) {
 
     init {
-//        // Get the region from environment variables
-//        val regionVar = TerraformVariable(
-//            this,
-//            "DEPLOY_TARGET_REGION",
-//            TerraformVariableConfig.builder()
-//                .type("string")
-//                .description("The AWS region")
-//                .build()
-//        )
-//        val region = regionVar.stringValue
-
         val region = "\${region}"
+
+        val accountVar = TerraformVariable(
+            this,
+            "DEPLOY_TARGET_ACCOUNT",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("The AWS region")
+                .build()
+        )
+        val account = accountVar.stringValue
         // Configure the AWS Provider
         AwsProvider(
             this,
@@ -320,7 +319,7 @@ class AwsStack(
                 .functionName(lambdaFunction.functionName)
                 .action("lambda:InvokeFunction")
                 .principal("apigateway.amazonaws.com")
-                .sourceArn("arn:aws:execute-api:${System.getenv("DEPLOY_TARGET_REGION")}:${System.getenv("DEPLOY_TARGET_ACCOUNT")}:${api.id}/*/${method.httpMethod}/${resource.pathPart}")
+                .sourceArn("arn:aws:execute-api:$region:$account:${api.id}/*/${method.httpMethod}/${resource.pathPart}")
                 .build()
         )
     }
