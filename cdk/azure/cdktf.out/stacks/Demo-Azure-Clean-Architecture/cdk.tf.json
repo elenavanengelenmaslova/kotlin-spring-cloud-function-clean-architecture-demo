@@ -81,7 +81,7 @@
           }
         },
         "storage_account_access_key": "${var.AZURE_STORAGE_ACCOUNT_ACCESS_KEY}",
-        "storage_account_name": "${storage_account_name}"
+        "storage_account_name": "${var.AZURE_STORAGE_ACCOUNT_NAME}"
       }
     },
     "azurerm_role_assignment": {

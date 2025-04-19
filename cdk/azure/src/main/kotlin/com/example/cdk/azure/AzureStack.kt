@@ -84,7 +84,6 @@ class AzureStack(scope: Construct, id: String) :
         val appServicePlanName =
             "demo_serverless_app_plan"
 
-        val storageAccountName = "\${storage_account_name}"
 
         // Configure the Azure Provider
         AzurermProvider(
@@ -127,7 +126,7 @@ class AzureStack(scope: Construct, id: String) :
         )
 
         // Create Storage Account for Blob Storage
-        val storageAccount = StorageAccount(
+        val storageAccountMockNest = StorageAccount(
             this,
             "demo-mocknest-sa",
             StorageAccountConfig.builder()
@@ -145,9 +144,9 @@ class AzureStack(scope: Construct, id: String) :
             "demo-mocknest-container",
             StorageContainerConfig.builder()
                 .name("demo-mocknest-mappings")  // Blob storage container name
-                .storageAccountName(storageAccount.name)
+                .storageAccountName(storageAccountMockNest.name)
                 .containerAccessType("private")  // Private access for security
-                .dependsOn(listOf(storageAccount))
+                .dependsOn(listOf(storageAccountMockNest))
                 .build()
         )
 
@@ -200,7 +199,7 @@ class AzureStack(scope: Construct, id: String) :
                 .resourceGroupName(resourceGroup.name)
                 .location(resourceGroup.location)
                 .servicePlanId(servicePlan.id)
-                .storageAccountName(storageAccountName)
+                .storageAccountName(azureStorageAccountNameVar.stringValue)
                 .storageAccountAccessKey(
                     storageAccountAccessKey
                 )
@@ -231,7 +230,7 @@ class AzureStack(scope: Construct, id: String) :
             this,
             "DemoFunctionAppBlobStorageRole",
             RoleAssignmentConfig.builder()
-                .scope(storageAccount.id)  // Assign access at the Storage Account level
+                .scope(storageAccountMockNest.id)  // Assign access at the Storage Account level
                 .roleDefinitionName("Storage Blob Data Contributor")  // Allows reading and writing blobs
                 .principalId(functionApp.identity.principalId)  // Assign to Function App's Managed Identity
                 .build()
@@ -241,7 +240,7 @@ class AzureStack(scope: Construct, id: String) :
             this,
             "DemoFunctionAppStorageContributorRole",
             RoleAssignmentConfig.builder()
-                .scope(storageAccount.id) // ✅ Give access to full Storage Account management
+                .scope(storageAccountMockNest.id) // ✅ Give access to full Storage Account management
                 .roleDefinitionName("Storage Account Contributor") // ✅ Allows creating/deleting tables
                 .principalId(functionApp.identity.principalId) // ✅ Assign to Function App's Managed Identity
                 .build()
