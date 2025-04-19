@@ -40,7 +40,7 @@ jobs:
       matrix:
         config:
           - {
-            component-name: "Kotlin Spring Cloud Function - Azure",
+            component-name: "Demo Spring Clean Architecture Azure Functions",
             stack-name: "Demo-Azure-Clean-Architecture"
           }
 
@@ -97,14 +97,7 @@ jobs:
   deploy-app:
     runs-on: ubuntu-latest
     needs: [ deploy-infra ]
-    strategy:
-      matrix:
-        config:
-          - {
-            component-name: "Kotlin Spring Cloud Function - Azure",
-            stack-name: "Demo-Azure-Clean-Architecture",
-          }
-    name: ${{ matrix.config.component-name }} deployment
+    name: Azure Functions deployment
 
     steps:
       - uses: actions/checkout@v4
@@ -128,9 +121,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
 
 
       - name: Deploy with gradle
         run: |
+          cd ${GITHUB_WORKSPACE}
           ./gradlew clean azureFunctionsDeploy
