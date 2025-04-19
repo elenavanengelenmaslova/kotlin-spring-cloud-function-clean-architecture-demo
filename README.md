@@ -154,11 +154,15 @@ If you plan to deploy the infrastructure, you may need to update the following:
 - The storage account for MockNest is set to "demomocknest" (this storage account must exist before deployment)
 - The storage container for Terraform state is set to "vintikterraformstorage" (this container must exist in the storage account before deployment)
 
+Ensure to run `generateTerraform.sh` after any infra changes in the appropriate cdk module (aws or azure) to regenerate terraform configuration.
+
 ## Configure Pipeline
 
-**NOTE**: This demo project does not use RBAC (Azure) or IAM (AWS) for access to GitHub Actions. If using company cloud resources, please follow your company's guidelines to give GitHub Actions access to cloud resources.
+> ⚠️ **Security Notice**  
+> This demo project does **not** use RBAC (Azure) or IAM (AWS) to restrict GitHub Actions' access to cloud resources for simplicity.  
+> If you are deploying to company environments, always follow your organization's security policies and configure GitHub Actions with proper role-based access control.
 
-If you're using GitHub Actions for deployment, you'll need to configure the following secrets:
+If you are using GitHub Actions for deployment, you'll need to configure the following secrets:
 
 ### AWS Deployment Secrets
 - `AWS_ACCOUNT_ID`: Your AWS account ID
