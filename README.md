@@ -11,7 +11,7 @@ For explanation, see:
 # Project Structure
 
 ```
-kotlin-spring-cloud-function-clean-architecture-example/
+kotlin-spring-cloud-function-clean-architecture-demo/
 │
 ├── build.gradle.kts     // Root build file
 ├── settings.gradle.kts  // Contains include statements for subprojects
