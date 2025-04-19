@@ -8,27 +8,27 @@ on:
         type: string
         default: "West Europe"
     secrets:
-      azure_subscription_id:
+      AZURE_SUBSCRIPTION_ID:
         required: true
-      azure_client_id:
+      AZURE_CLIENT_ID:
         required: true
-      azure_client_secret:
+      AZURE_CLIENT_SECRET:
         required: true
-      azure_tenant_id:
+      AZURE_TENANT_ID:
         required: true
-      azure_storage_account_name:
+      AZURE_STORAGE_ACCOUNT_NAME:
         required: true
-      azure_storage_account_access_key:
+      AZURE_STORAGE_ACCOUNT_ACCESS_KEY:
         required: true
 
 env:
   DEPLOY_TARGET_REGION: ${{ inputs.azure_region }}
-  AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.azure_storage_account_name }}
-  TF_VAR_AZURE_STORAGE_ACCOUNT_ACCESS_KEY: ${{ secrets.azure_storage_account_access_key }}
-  AZURE_CLIENT_ID: ${{ secrets.azure_client_id }}
-  AZURE_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
-  AZURE_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
-  AZURE_TENANT_ID: ${{ secrets.azure_tenant_id }}
+  AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+  TF_VAR_AZURE_STORAGE_ACCOUNT_ACCESS_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_ACCESS_KEY }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   BUILD_NO: ${{ github.run_number }}
   AZURE_RESOURCE_GROUP_NAME: "DefaultResourceGroup-WEU"
 
@@ -58,10 +58,10 @@ jobs:
         with:
           creds: >
             {
-              "clientId": "${{ secrets.azure_client_id }}",
-              "clientSecret": "${{ secrets.azure_client_secret }}",
-              "subscriptionId": "${{ secrets.azure_subscription_id }}",
-              "tenantId": "${{ secrets.azure_tenant_id }}"
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
             }
 
       - uses: actions/setup-node@v4
@@ -113,10 +113,10 @@ jobs:
         with:
           creds: >
             {
-              "clientId": "${{ secrets.azure_client_id }}",
-              "clientSecret": "${{ secrets.azure_client_secret }}",
-              "subscriptionId": "${{ secrets.azure_subscription_id }}",
-              "tenantId": "${{ secrets.azure_tenant_id }}"
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
             }
 
       - uses: actions/setup-node@v4

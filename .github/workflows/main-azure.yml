@@ -6,6 +6,8 @@ on:
       - '**.md'
       - 'cdk/aws/**'
       - 'software/infrastructure/aws/**'
+      - ./.github/workflows/feature-aws.yml
+      - ./.github/workflows/workflow-build-deploy-aws.yml
   workflow_dispatch:
 
 jobs:
