@@ -160,7 +160,7 @@ Ensure to run `generateTerraform.sh` after any infra changes in the appropriate 
 
 > ⚠️ **Security Notice**  
 > This demo project does **not** use RBAC (Azure) or IAM (AWS) to restrict GitHub Actions' access to cloud resources for simplicity.  
-> If you are deploying to company environments, always follow your organization's security policies and configure GitHub Actions with proper role-based access control.
+> If you are deploying to company environments, always follow your organization's security policies and configure GitHub Actions with proper role-based access control. 
 
 If you are using GitHub Actions for deployment, you'll need to configure the following secrets:
 
@@ -219,6 +219,8 @@ If you have questions or encounter issues, please log them in the repository's i
 For further reference, please consider the following sections:
 
 * [**Live Coding Featuring This Imlementation @Voxxed Days Amsterdam (April 3, 2025)**](https://www.youtube.com/watch?v=wz0GQbkrr1Q): *Clean Architecture for Serverless: Business Logic You Can Take Anywhere*
+* [OpenID Connect in AWS](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
+* [OpenID Connect in Azure](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-azure)
 * [Official Gradle documentation](https://docs.gradle.org)
 * [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.1.4/gradle-plugin/reference/html/)
 * [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.1.4/gradle-plugin/reference/html/#build-image)
