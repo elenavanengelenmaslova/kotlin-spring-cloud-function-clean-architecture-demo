@@ -1,0 +1,211 @@
+{
+  "//": {
+    "metadata": {
+      "backend": "azurerm",
+      "stackName": "Demo-Azure-Clean-Architecture",
+      "version": "0.20.12"
+    },
+    "outputs": {
+    }
+  },
+  "data": {
+    "azurerm_resource_group": {
+      "ExistingResourceGroup": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/ExistingResourceGroup",
+            "uniqueId": "ExistingResourceGroup"
+          }
+        },
+        "name": "${var.AZURE_RESOURCE_GROUP_NAME}"
+      }
+    }
+  },
+  "provider": {
+    "azurerm": [
+      {
+        "client_id": "${var.AZURE_CLIENT_ID}",
+        "client_secret": "${var.AZURE_CLIENT_SECRET}",
+        "features": [
+          {
+          }
+        ],
+        "subscription_id": "${var.AZURE_SUBSCRIPTION_ID}",
+        "tenant_id": "${var.AZURE_TENANT_ID}"
+      }
+    ]
+  },
+  "resource": {
+    "azurerm_application_insights": {
+      "AppInsights": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/AppInsights",
+            "uniqueId": "AppInsights"
+          }
+        },
+        "application_type": "java",
+        "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
+        "name": "demo-spring-cloud-app-insights",
+        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}"
+      }
+    },
+    "azurerm_linux_function_app": {
+      "DemoSpringCloudFunctionApp": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/DemoSpringCloudFunctionApp",
+            "uniqueId": "DemoSpringCloudFunctionApp"
+          }
+        },
+        "app_settings": {
+          "APPINSIGHTS_INSTRUMENTATIONKEY": "${azurerm_application_insights.AppInsights.instrumentation_key}",
+          "MAIN_CLASS": "com.example.clean.architecture.Application",
+          "WEBSITE_RUN_FROM_PACKAGE": "1"
+        },
+        "depends_on": [
+          "data.azurerm_resource_group.ExistingResourceGroup",
+          "azurerm_service_plan.DemoSpringCloudExampleServicePlan",
+          "azurerm_application_insights.AppInsights"
+        ],
+        "identity": {
+          "type": "SystemAssigned"
+        },
+        "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
+        "name": "demo-spring-clean-architecture-fun",
+        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}",
+        "service_plan_id": "${azurerm_service_plan.DemoSpringCloudExampleServicePlan.id}",
+        "site_config": {
+          "application_stack": {
+            "java_version": "21"
+          }
+        },
+        "storage_account_access_key": "${var.AZURE_STORAGE_ACCOUNT_ACCESS_KEY}",
+        "storage_account_name": "${var.AZURE_STORAGE_ACCOUNT_NAME}"
+      }
+    },
+    "azurerm_role_assignment": {
+      "DemoFunctionAppBlobStorageRole": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/DemoFunctionAppBlobStorageRole",
+            "uniqueId": "DemoFunctionAppBlobStorageRole"
+          }
+        },
+        "principal_id": "${azurerm_linux_function_app.DemoSpringCloudFunctionApp.identity[0].principal_id}",
+        "role_definition_name": "Storage Blob Data Contributor",
+        "scope": "${azurerm_storage_account.demo-mocknest-sa.id}"
+      },
+      "DemoFunctionAppStorageContributorRole": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/DemoFunctionAppStorageContributorRole",
+            "uniqueId": "DemoFunctionAppStorageContributorRole"
+          }
+        },
+        "principal_id": "${azurerm_linux_function_app.DemoSpringCloudFunctionApp.identity[0].principal_id}",
+        "role_definition_name": "Storage Account Contributor",
+        "scope": "${azurerm_storage_account.demo-mocknest-sa.id}"
+      }
+    },
+    "azurerm_service_plan": {
+      "DemoSpringCloudExampleServicePlan": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/DemoSpringCloudExampleServicePlan",
+            "uniqueId": "DemoSpringCloudExampleServicePlan"
+          }
+        },
+        "depends_on": [
+          "data.azurerm_resource_group.ExistingResourceGroup"
+        ],
+        "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
+        "name": "demo_serverless_app_plan",
+        "os_type": "Linux",
+        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}",
+        "sku_name": "Y1"
+      }
+    },
+    "azurerm_storage_account": {
+      "demo-mocknest-sa": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/demo-mocknest-sa",
+            "uniqueId": "demo-mocknest-sa"
+          }
+        },
+        "account_replication_type": "LRS",
+        "account_tier": "Standard",
+        "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
+        "name": "demomocknest",
+        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}"
+      }
+    },
+    "azurerm_storage_container": {
+      "demo-mocknest-container": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/demo-mocknest-container",
+            "uniqueId": "demo-mocknest-container"
+          }
+        },
+        "container_access_type": "private",
+        "depends_on": [
+          "azurerm_storage_account.demo-mocknest-sa"
+        ],
+        "name": "demo-mocknest-mappings",
+        "storage_account_name": "${azurerm_storage_account.demo-mocknest-sa.name}"
+      }
+    }
+  },
+  "terraform": {
+    "backend": {
+      "azurerm": {
+        "client_id": "${client_id}",
+        "client_secret": "${client_secret}",
+        "container_name": "vintikterraformstorage",
+        "key": "demo-kscfunction/terraform.tfstate",
+        "resource_group_name": "${resource_group_name}",
+        "storage_account_name": "${storage_account_name}",
+        "subscription_id": "${subscription_id}",
+        "tenant_id": "${tenant_id}"
+      }
+    },
+    "required_providers": {
+      "azurerm": {
+        "source": "azurerm",
+        "version": "4.21.1"
+      }
+    }
+  },
+  "variable": {
+    "AZURE_CLIENT_ID": {
+      "description": "Azure client ID",
+      "type": "string"
+    },
+    "AZURE_CLIENT_SECRET": {
+      "description": "Azure client secret",
+      "type": "string"
+    },
+    "AZURE_RESOURCE_GROUP_NAME": {
+      "description": "Azure resource group name",
+      "type": "string"
+    },
+    "AZURE_STORAGE_ACCOUNT_ACCESS_KEY": {
+      "description": "Storage account access key",
+      "type": "string"
+    },
+    "AZURE_STORAGE_ACCOUNT_NAME": {
+      "description": "Azure storage account name",
+      "type": "string"
+    },
+    "AZURE_SUBSCRIPTION_ID": {
+      "description": "Azure subscription ID",
+      "type": "string"
+    },
+    "AZURE_TENANT_ID": {
+      "description": "Azure tenant ID",
+      "type": "string"
+    }
+  }
+}

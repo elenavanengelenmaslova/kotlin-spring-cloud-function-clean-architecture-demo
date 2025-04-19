@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "45adb6c3-c5af-44cd-ac99-2390ed9c6384",
+		"name": "Azure MockNest Conf Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20128017"
+	},
+	"item": [
+		{
+			"name": "Reset mappings",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{admin_function_key}}",
+						"description": "Function key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/__admin/mappings/reset",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"__admin",
+						"mappings",
+						"reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create mapping Add Soap 5+3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{admin_function_key}}",
+						"description": "Azure Function Key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"76ada7b0-55ae-4229-91c4-396a36f18123\",\n  \"priority\": 1,\n  \"request\": {\n    \"method\": \"POST\",\n    \"url\": \"/dneonline/calculator.asmx\",\n    \"bodyPatterns\": [\n      {\n        \"matchesXPath\": \"//*[local-name()='intA' and text()='5']\"\n      },\n      {\n        \"matchesXPath\": \"//*[local-name()='intB' and text()='3']\"\n      }\n    ]\n  },\n  \"response\": {\n    \"status\": 200,\n    \"headers\": {\n      \"Content-Type\": \"text/xml; charset=utf-8\"\n    },\n    \"body\": \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>\\n<soap:Envelope xmlns:soap=\\\"http://schemas.xmlsoap.org/soap/envelope/\\\">\\n  <soap:Body>\\n    <AddResponse xmlns=\\\"http://tempuri.org/\\\">\\n      <AddResult>42</AddResult>\\n    </AddResponse>\\n  </soap:Body>\\n</soap:Envelope>\"\n  },\n  \"persistent\": true\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/__admin/mappings",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"__admin",
+						"mappings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Call mock Add Soap",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{client_function_key}}",
+						"description": "Azure Function Key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n               xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n               xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <Add xmlns=\"http://tempuri.org/\">\n      <intA>5</intA>\n      <intB>3</intB>\n    </Add>\n  </soap:Body>\n</soap:Envelope>\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/mocknest/dneonline/calculator.asmx",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"mocknest",
+						"dneonline",
+						"calculator.asmx"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create mapping Bored API",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{admin_function_key}}",
+						"description": "Azure Function Key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"76ada7b0-55ae-4229-91c4-396a36f18345\",\n  \"priority\": 1,\n  \"request\": {\n    \"method\": \"GET\",\n    \"urlPath\": \"/bored/api/activity\",\n    \"queryParameters\": {\n      \"type\": {\n        \"equalTo\": \"social\"\n      }\n    }\n  },\n  \"response\": {\n    \"status\": 200,\n    \"headers\": {\n      \"Content-Type\": \"application/json\"\n    },\n    \"body\": \"{\\n  \\\"activity\\\": \\\"Escape the nulls of daily life — nerd out over Kotlin on Serverless @ VoxxedDays Amsterdam 2025\\\",\\n  \\\"type\\\": \\\"social\\\",\\n  \\\"participants\\\": 1,\\n  \\\"link\\\": \\\"https://amsterdam.voxxeddays.com/\\\",\\n  \\\"price\\\": 0.3,\\n  \\\"accessibility\\\": 0.4\\n}\"\n  },\n  \"persistent\": true\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/__admin/mappings",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"__admin",
+						"mappings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Call mock Bored API",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{client_function_key}}",
+						"description": "Azure Function Key",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{AZURE_URL}}/mocknest/bored/api/activity?type=social",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"mocknest",
+						"bored",
+						"api",
+						"activity"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "social"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get near misses",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{admin_function_key}}",
+						"description": "Azure Function key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/__admin/requests/unmatched/near-misses",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"__admin",
+						"requests",
+						"unmatched",
+						"near-misses"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{client_function_key}}",
+						"description": "Azure Function key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/mocknest/health",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"mocknest",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete mapping Add Soap",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{admin_function_key}}",
+						"description": "Azure Function Key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/__admin/mappings/76ada7b0-55ae-4229-91c4-396a36f18345",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"__admin",
+						"mappings",
+						"76ada7b0-55ae-4229-91c4-396a36f18345"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

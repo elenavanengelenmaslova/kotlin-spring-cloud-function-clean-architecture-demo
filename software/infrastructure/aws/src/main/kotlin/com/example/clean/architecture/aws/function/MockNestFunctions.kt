@@ -17,7 +17,7 @@ private const val MOCKNEST_PREFIX = "/mocknest/"
 
 @Configuration
 class MockNestFunctions(
-    private val handleWireMockRequest: HandleClientRequest,
+    private val handleClientRequest: HandleClientRequest,
     private val handleAdminRequest: HandleAdminRequest,
 ) {
     @Bean
@@ -29,7 +29,7 @@ class MockNestFunctions(
                     val adminPath = path.removePrefix(ADMIN_PREFIX)
                     handleAdminRequest(adminPath, createHttpRequest(adminPath))
                 } else {
-                    handleWireMockRequest(createHttpRequest(path.removePrefix(MOCKNEST_PREFIX)))
+                    handleClientRequest(createHttpRequest(path.removePrefix(MOCKNEST_PREFIX)))
                 }
             }.let {
                 APIGatewayProxyResponseEvent()
@@ -37,6 +37,7 @@ class MockNestFunctions(
                     .withHeaders(it.headers?.toSingleValueMap())
                     .withBody(it.body?.toString().orEmpty())
             }
+
         }
     }
 

@@ -14,7 +14,6 @@ import com.microsoft.azure.functions.annotation.BindingName
 import com.microsoft.azure.functions.annotation.FunctionName
 import com.microsoft.azure.functions.annotation.HttpTrigger
 import org.springframework.stereotype.Component
-import org.springframework.http.HttpMethod as SpringHttpMethod
 
 @Component
 class MockNestFunctions(
@@ -35,7 +34,7 @@ class MockNestFunctions(
     ): HttpResponseMessage {
         val response = handleClientRequest(
             HttpRequest(
-                SpringHttpMethod.valueOf(request.httpMethod.name),
+                org.springframework.http.HttpMethod.valueOf(request.httpMethod.name),
                 request.headers,
                 route,
                 request.queryParameters,
@@ -60,14 +59,13 @@ class MockNestFunctions(
         val response = handleAdminRequest(
             route ?: "",
             HttpRequest(
-                SpringHttpMethod.valueOf(request.httpMethod.name),
+                org.springframework.http.HttpMethod.valueOf(request.httpMethod.name),
                 request.headers,
                 route,
                 request.queryParameters,
                 request.body
             )
         )
-
         return buildResponse(request, response)
     }
 

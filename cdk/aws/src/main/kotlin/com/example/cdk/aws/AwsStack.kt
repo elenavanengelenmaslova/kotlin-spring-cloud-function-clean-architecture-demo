@@ -1,9 +1,6 @@
 package com.example.cdk.aws
 
-import com.hashicorp.cdktf.Fn
-import com.hashicorp.cdktf.S3Backend
-import com.hashicorp.cdktf.S3BackendConfig
-import com.hashicorp.cdktf.TerraformStack
+import com.hashicorp.cdktf.*
 import com.hashicorp.cdktf.providers.aws.api_gateway_api_key.ApiGatewayApiKey
 import com.hashicorp.cdktf.providers.aws.api_gateway_api_key.ApiGatewayApiKeyConfig
 import com.hashicorp.cdktf.providers.aws.api_gateway_deployment.ApiGatewayDeployment
@@ -49,10 +46,25 @@ class AwsStack(
 ) : TerraformStack(scope, id) {
 
     init {
-        // Get the region from environment variables
-        val region =
-            System.getenv("DEPLOY_TARGET_REGION")
+        val regionVar = TerraformVariable(
+            this,
+            "DEPLOY_TARGET_REGION",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("The AWS region")
+                .build()
+        )
+        val region = regionVar.stringValue
 
+        val accountVar = TerraformVariable(
+            this,
+            "DEPLOY_TARGET_ACCOUNT",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("The AWS account")
+                .build()
+        )
+        val account = accountVar.stringValue
         // Configure the AWS Provider
         AwsProvider(
             this,
@@ -65,7 +77,7 @@ class AwsStack(
         S3Backend(
             this,
             S3BackendConfig.builder()
-                .region(region)
+                .region("\${region}")
                 .bucket("kotlin-lambda-terraform-state")
                 .key("demo-terraform-cdk/terraform.tfstate")
                 .encrypt(true).build()
@@ -165,7 +177,7 @@ class AwsStack(
             LambdaFunctionConfig.builder()
                 .functionName("Demo-Spring-Clean-Architecture-Fun")
                 .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker")
-                .runtime("java17")
+                .runtime("java21")
                 .s3Bucket("lambda-deployment-clean-architecture-example")
                 .s3Key("demo-aws-function.jar")
                 .sourceCodeHash(
@@ -179,7 +191,7 @@ class AwsStack(
                     )
                 )
                 .memorySize(1024)
-                .snapStart { "PublishedVersions" }
+                //.snapStart { "PublishedVersions" }
                 .environment(
                     LambdaFunctionEnvironment.builder()
                         .variables(
@@ -241,7 +253,7 @@ class AwsStack(
                 .httpMethod(method.httpMethod)
                 .integrationHttpMethod("POST")
                 .type("AWS_PROXY")
-                .uri("arn:aws:apigateway:${System.getenv("DEPLOY_TARGET_REGION")}:lambda:path/2015-03-31/functions/${lambdaFunction.arn}/invocations")
+                .uri("arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${lambdaFunction.arn}/invocations")
                 .build()
         )
 
@@ -315,7 +327,7 @@ class AwsStack(
                 .functionName(lambdaFunction.functionName)
                 .action("lambda:InvokeFunction")
                 .principal("apigateway.amazonaws.com")
-                .sourceArn("arn:aws:execute-api:${System.getenv("DEPLOY_TARGET_REGION")}:${System.getenv("DEPLOY_TARGET_ACCOUNT")}:${api.id}/*/${method.httpMethod}/${resource.pathPart}")
+                .sourceArn("arn:aws:execute-api:$region:$account:${api.id}/*/${method.httpMethod}/${resource.pathPart}")
                 .build()
         )
     }

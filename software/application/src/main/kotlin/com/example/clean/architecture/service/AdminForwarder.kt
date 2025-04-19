@@ -47,7 +47,6 @@ class AdminForwarder(
                 logger.info { "Resetting MockNest mappings" }
                 wireMockServer.runCatching {
                     resetToDefaultMappings()
-
                     // Delete all mappings from storage
                     val storedMappings = objectStorage.list()
                     storedMappings.forEach { mappingId ->
@@ -149,7 +148,7 @@ class AdminForwarder(
 
     private fun String.toStubMapping(): StubMapping = Json.getObjectMapper().readValue(this, StubMapping::class.java)
 
-    private fun saveStubMapping(mapping: StubMapping, bodyString: String, ): String {
+    private fun saveStubMapping(mapping: StubMapping, bodyString: String): String {
         return mapping.runCatching {
             if (isPersistent) {
                 logger.info { "Saving persistent mapping with ID: $id" }

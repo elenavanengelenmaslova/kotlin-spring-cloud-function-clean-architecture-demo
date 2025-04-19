@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "67d6cdba-ca69-459a-bd36-725dc9531813",
+		"name": "Health Checks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20128017"
+	},
+	"item": [
+		{
+			"name": "Health AWS",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AWS_URL}}/mocknest/health",
+					"host": [
+						"{{AWS_URL}}"
+					],
+					"path": [
+						"mocknest",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Azure",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-functions-key",
+						"value": "{{client_function_key}}",
+						"description": "Azure Function key",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{AZURE_URL}}/mocknest/health",
+					"host": [
+						"{{AZURE_URL}}"
+					],
+					"path": [
+						"mocknest",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
