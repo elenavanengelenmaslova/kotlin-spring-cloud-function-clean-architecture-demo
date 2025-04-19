@@ -24,14 +24,14 @@
   "provider": {
     "azurerm": [
       {
-        "client_id": "${client_id}",
-        "client_secret": "${client_secret}",
+        "client_id": "${var.AZURE_CLIENT_ID}",
+        "client_secret": "${var.AZURE_CLIENT_SECRET}",
         "features": [
           {
           }
         ],
-        "subscription_id": "${subscription_id}",
-        "tenant_id": "${tenant_id}"
+        "subscription_id": "${var.AZURE_SUBSCRIPTION_ID}",
+        "tenant_id": "${var.AZURE_TENANT_ID}"
       }
     ]
   },

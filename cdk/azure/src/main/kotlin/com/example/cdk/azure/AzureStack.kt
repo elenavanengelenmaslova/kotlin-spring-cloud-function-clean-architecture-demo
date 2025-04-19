@@ -91,10 +91,10 @@ class AzureStack(scope: Construct, id: String) :
             this,
             "Azure",
             AzurermProviderConfig.builder()
-                .subscriptionId("\${subscription_id}")
-                .clientId("\${client_id}")
-                .clientSecret("\${client_secret}")
-                .tenantId("\${tenant_id}")
+                .subscriptionId(azureSubscriptionIdVar.stringValue)
+                .clientId(azureClientIdVar.stringValue)
+                .clientSecret(azureClientSecretVar.stringValue)
+                .tenantId(azureTenantIdVar.stringValue)
                 .features(
                     mutableListOf(
                         AzurermProviderFeatures.builder().build()
@@ -102,7 +102,6 @@ class AzureStack(scope: Construct, id: String) :
                 )
                 .build()
         )
-
 
         // Configure Terraform Backend to Use Azure Blob Storage
         AzurermBackend(
