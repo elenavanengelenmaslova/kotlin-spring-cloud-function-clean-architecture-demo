@@ -159,10 +159,10 @@ Ensure to run `generateTerraform.sh` after any infra changes in the appropriate 
 ## Configure Pipeline
 
 > ⚠️ **Security Notice**  
-> This demo project does **not** use RBAC (Azure) or IAM (AWS) to restrict GitHub Actions' access to cloud resources for simplicity.  
+> This demo project does **not** use OpenID Connect for simplicity.  
 > If you are deploying to company environments, always follow your organization's security policies and configure GitHub Actions with proper role-based access control. 
 
-If you are using GitHub Actions for deployment, you'll need to configure the following secrets:
+If you are using GitHub Actions for deployment, you'll need to configure the following repository secrets:
 
 ### AWS Deployment Secrets
 - `AWS_ACCOUNT_ID`: Your AWS account ID
