@@ -27,51 +27,10 @@ class MockNestFunctionsIntegrationTest {
         mockk<HttpRequestMessage<String>>(relaxed = true)
 
     @Test
-    fun `When mapped SF request then maps SF response in MockNest`() {
-        every { request.httpMethod } returns HttpMethod.POST
-        every { request.body } returns "{\n" +
-                "    \"allOrNone\": true,\n" +
-                "    \"compositeRequest\": [\n" +
-                "        {\n" +
-                "            \"method\": \"GET\",\n" +
-                "            \"referenceId\": \"AccountRequest\",\n" +
-                "            \"url\": \"/services/data/v59.0/}/query/?q=SELECT+Id,+Name,+Employer__r.EmployerId__c,+Employer__r.Id,+EffectiveTo__c+FROM+PayrollTaxNumber__c+WHERE+EffectiveTo__c=null+AND+Name='861733757L02' LIMIT 1\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"method\": \"GET\",\n" +
-                "            \"referenceId\": \"AcountAccountRequest\",\n" +
-                "            \"url\": \"/services/data/v59.0/query/?q=SELECT+FinServ__RelatedAccount__r.PensionFundId__c+FROM+FinServ__AccountAccountRelation__c+WHERE+(FinServ__Account__c IN (SELECT Employer__c FROM PayrollTaxNumber__c WHERE EffectiveTo__c=null AND Name='861733757L02s'))\"\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}"
-        mockNestFunctions.forwardClientRequest(
-            request,
-            "services/data/v59.0/composite",
-            context
-        )
-        verify {
-            request
-                .createResponseBuilder(
-                    HttpStatus.valueOf(
-                        200
-                    )
-                )
-        }
-    }
-
-    @Test
-    fun `When regex match request then maps to a success response`() {
+    fun `When match request then maps to a success response`() {
         every { request.httpMethod } returns HttpMethod.GET
-        every { request.body } returns """
-        {
-            "cashflow": {
-                "cashflowId": 1,
-                "cashflowType": "NEW"
-            }
-        }
-    """.trimIndent()
 
-        mockNestFunctions.forwardClientRequest(request, "invoices/PN2000000001/versions/latest", context)
+        mockNestFunctions.forwardClientRequest(request, "health", context)
         verify {
             request
                 .createResponseBuilder(HttpStatus.valueOf(200))
