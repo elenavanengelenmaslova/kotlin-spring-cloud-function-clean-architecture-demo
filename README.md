@@ -5,9 +5,6 @@
 For explanation, see:
 * [**Live Coding Featuring This Imlementation @Voxxed Days Amsterdam (April 3, 2025)**](https://www.youtube.com/watch?v=wz0GQbkrr1Q)
 
-**SECURITY NOTE**: This is a demo project and does not use RBAC (Azure) or IAM (AWS) for access to GitHub Actions. It is not intended for company cloud environments. For company cloud deployments, follow your company's guidelines to give access to GitHub Actions.
-
-
 # Project Structure
 
 ```
@@ -65,6 +62,7 @@ kotlin-spring-cloud-function-clean-architecture-demo/
 
 # Mock Nest
 ## Use cases
+![UseCases.png](docs/UseCases.png)
 _View with PlantUML IntelliJ plugin_
 ```plantuml
 
