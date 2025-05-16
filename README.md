@@ -157,7 +157,7 @@ Ensure to run `generateTerraform.sh` after any infra changes in the appropriate 
 ## Configure Pipeline
 
 > ⚠️ **Security Notice**  
-> This demo project does **not** use OpenID Connect for simplicity.  
+> This demo project does **not** use OpenID Connect for simplicity. For an example project that uses OpenID Connect, see https://github.com/elenavanengelenmaslova/kotlin-clean-architecture-example-docs-flow.
 > If you are deploying to company environments, always follow your organization's security policies and configure GitHub Actions with proper role-based access control. 
 
 If you are using GitHub Actions for deployment, you'll need to configure the following repository secrets:
@@ -217,6 +217,7 @@ If you have questions or encounter issues, please log them in the repository's i
 For further reference, please consider the following sections:
 
 * [**Live Coding Featuring This Imlementation @Voxxed Days Amsterdam (April 3, 2025)**](https://www.youtube.com/watch?v=wz0GQbkrr1Q): *Clean Architecture for Serverless: Business Logic You Can Take Anywhere*
+* [Alternative Example of Clean Architecture for Serverless in Action](https://github.com/elenavanengelenmaslova/kotlin-clean-architecture-example-docs-flow)
 * [OpenID Connect in AWS](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
 * [OpenID Connect in Azure](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-azure)
 * [Official Gradle documentation](https://docs.gradle.org)
