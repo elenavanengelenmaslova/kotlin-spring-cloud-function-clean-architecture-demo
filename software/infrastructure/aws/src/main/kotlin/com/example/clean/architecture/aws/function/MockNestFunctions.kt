@@ -17,7 +17,7 @@ import java.util.function.Function
 private val logger = KotlinLogging.logger {}
 private const val ADMIN_PREFIX = "/__admin/"
 private const val MOCKNEST_PREFIX = "/mocknest/"
-private const val DEMO_PREFIX = "/demo/"
+private const val DEMO_PREFIX = "/demo"
 
 @Configuration
 class MockNestFunctions(
