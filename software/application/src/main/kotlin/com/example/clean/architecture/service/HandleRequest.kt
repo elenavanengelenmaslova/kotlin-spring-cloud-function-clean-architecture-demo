@@ -9,3 +9,6 @@ fun interface HandleClientRequest {
 fun interface HandleAdminRequest {
     operator fun invoke(path: String, httpRequest: HttpRequest): HttpResponse
 }
+fun interface HandleDemoRequest {
+    operator fun invoke(): HttpResponse
+}
