@@ -310,16 +310,16 @@ class AwsStack(
         )
 
 
-        // Link API Key to Usage Plan
-        ApiGatewayUsagePlanKey(
-            this,
-            "Demo-Spring-Clean-Architecture-UsagePlanKey",
-            ApiGatewayUsagePlanKeyConfig.builder()
-                .keyId(apiKey.id)
-                .keyType("API_KEY")
-                .usagePlanId(usagePlan.id)
-                .build()
-        )
+//        // Link API Key to Usage Plan
+//        ApiGatewayUsagePlanKey(
+//            this,
+//            "Demo-Spring-Clean-Architecture-UsagePlanKey",
+//            ApiGatewayUsagePlanKeyConfig.builder()
+//                .keyId(apiKey.id)
+//                .keyType("API_KEY")
+//                .usagePlanId(usagePlan.id)
+//                .build()
+//        )
 
         // Grant API Gateway permission to invoke Lambda
         LambdaPermission(
