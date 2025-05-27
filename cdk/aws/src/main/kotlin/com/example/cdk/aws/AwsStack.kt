@@ -240,7 +240,8 @@ class AwsStack(
                 .resourceId(resource.id)
                 .httpMethod("ANY")
                 .authorization("NONE")
-                .apiKeyRequired(true)  // Require API key
+//                .apiKeyRequired(true)  // Require API key
+                .apiKeyRequired(false)  // Require API key
                 .build()
         )
 
