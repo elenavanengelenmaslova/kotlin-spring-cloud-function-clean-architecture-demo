@@ -200,7 +200,7 @@ class AwsStack(
                                 "MAIN_CLASS" to "com.example.clean.architecture.Application",
                                 "AWS_S3_BUCKET_NAME" to s3Bucket.bucket,
                                 //Stop at level 1 (C1 compiler)
-                                "JAVA_TOOL_OPTIONS" to "-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+                                "JAVA_TOOL_OPTIONS" to "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
                             )
                         ).build()
                 )

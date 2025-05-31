@@ -3,12 +3,14 @@ package com.example.clean.architecture.aws.function
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.example.clean.architecture.model.HttpRequest
+import com.example.clean.architecture.model.HttpResponse
 import com.example.clean.architecture.service.HandleAdminRequest
 import com.example.clean.architecture.service.HandleClientRequest
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import java.util.function.Function
 
 private val logger = KotlinLogging.logger {}
@@ -25,12 +27,22 @@ class MockNestFunctions(
         return Function { event ->
             with(event) {
                 logger.info { "MockNest request: $httpMethod $path $headers" }
-                if (path.startsWith(ADMIN_PREFIX)) {
-                    val adminPath = path.removePrefix(ADMIN_PREFIX)
-                    handleAdminRequest(adminPath, createHttpRequest(adminPath))
-                } else {
-                    handleClientRequest(createHttpRequest(path.removePrefix(MOCKNEST_PREFIX)))
+                when {
+                    path.startsWith(ADMIN_PREFIX) -> {
+                        val adminPath = path.removePrefix(ADMIN_PREFIX)
+                        handleAdminRequest(adminPath, createHttpRequest(adminPath))
+                    }
+                    path.startsWith(MOCKNEST_PREFIX) -> {
+                        handleClientRequest(createHttpRequest(path.removePrefix(MOCKNEST_PREFIX)))
+                    }
+                    else -> {
+                        HttpResponse(
+                            HttpStatus.NOT_FOUND,
+                            body = "Path $path not found"
+                        )
+                    }
                 }
+
             }.let {
                 APIGatewayProxyResponseEvent()
                     .withStatusCode(it.httpStatusCode.value())
@@ -40,6 +52,7 @@ class MockNestFunctions(
 
         }
     }
+
 
     private fun APIGatewayProxyRequestEvent.createHttpRequest(path: String): HttpRequest {
         val request = HttpRequest(
@@ -52,5 +65,3 @@ class MockNestFunctions(
         return request
     }
 }
-
-

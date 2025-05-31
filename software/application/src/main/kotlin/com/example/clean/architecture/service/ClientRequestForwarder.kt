@@ -10,6 +10,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Component
+import wiremock.org.apache.hc.core5.http.ContentType
+import java.net.URLEncoder
+import kotlin.text.Charsets.UTF_8
 import com.github.tomakehurst.wiremock.http.HttpHeaders as WireMockHttpHeaders
 
 private val logger = KotlinLogging.logger {}
@@ -20,61 +23,61 @@ class ClientRequestForwarder(private val directCallHttpServer: DirectCallHttpSer
     HandleClientRequest {
     override fun invoke(httpRequest: HttpRequest): HttpResponse {
         logger.info { "Forwarding request body: ${httpRequest.body} to path: ${httpRequest.path}" }
-        return runCatching {
-            val queryString =
-                httpRequest.queryParameters.entries
-                    .joinToString("&") { (key, value) -> "$key=$value" }
-                    .takeIf { it.isNotEmpty() }
-                    ?.let { "?$it" }
-                    .orEmpty()
-            val path = httpRequest.path
-            val absoluteURL = "$BASE_URL/$path$queryString"
 
-            logger.info { "Posting to absolute url: $absoluteURL" }
-            // Create a MockNest request
-            val mockNestRequest =
-                ImmutableRequest.create()
-                    .withAbsoluteUrl(absoluteURL)
-                    .withMethod(
-                        RequestMethod.fromString(
-                            httpRequest.method.name()
-                        )
-                    )
-                    .withHeaders(
-                        WireMockHttpHeaders(
-                            httpRequest.headers.map {
-                                HttpHeader(it.key, it.value)
-                            }
-                        ))
-                    .withBody(httpRequest.body?.toString().orEmpty().toByteArray())
-                    .build()
-
-            logger.debug { "Calling MockNest with request: ${httpRequest.method} ${httpRequest.path}" }
-
-            // Call stubRequest on the DirectCallHttpServer
-            val response = directCallHttpServer.stubRequest(mockNestRequest)
-
-            logger.trace { "MockNest response: ${response.bodyAsString}, code: ${response.status}" }
-
-            // Convert the MockNest Response to an HttpResponse
-            val responseHeaders = HttpHeaders()
-            response.headers.all().forEach { header ->
-                responseHeaders.add(header.key(), header.firstValue())
+        val queryString = httpRequest.queryParameters.entries
+            .joinToString("&") { (key, value) ->
+                "${URLEncoder.encode(key, UTF_8)}=${URLEncoder.encode(value, UTF_8)}"
             }
+            .takeIf { it.isNotEmpty() }
+            ?.let { "?$it" }
+            .orEmpty()
 
-            HttpResponse(
-                HttpStatusCode.valueOf(response.status),
-                responseHeaders,
-                response.bodyAsString
-            )
-        }.getOrElse { exception ->
-            // Handle exceptions
-            logger.error(exception) { "Failed to call MockNest: ${exception.message}" }
-            HttpResponse(
-                HttpStatusCode.valueOf(500),
-                body = exception.message
-            )
+        val path = httpRequest.path
+
+        // Create a WireMock request using the WireMock client
+        val wireMockRequest =
+            ImmutableRequest.create()
+                .withAbsoluteUrl("$BASE_URL/$path$queryString")
+                .withMethod(
+                    RequestMethod.fromString(
+                        httpRequest.method.name()
+                    )
+                )
+                .withHeaders(
+                    WireMockHttpHeaders(
+                        httpRequest.headers.map { header ->
+                            HttpHeader(header.key, header.value)
+                        }
+                    ))
+                .withBody(httpRequest.body?.toString().orEmpty().toByteArray())
+                .build()
+
+        logger.debug { "Calling wiremock with request: ${httpRequest.method} ${httpRequest.path}" }
+
+        // Call stubRequest on the DirectCallHttpServer
+        val response = directCallHttpServer.stubRequest(wireMockRequest)
+
+        logger.trace { "Wiremock response: ${response.bodyAsString}, code: ${response.status}" }
+        val contentType =
+            if (response.headers.contentTypeHeader.isPresent) response.headers.contentTypeHeader.firstValue()
+            else ContentType.APPLICATION_JSON.toString()
+        // Convert the WireMock Response to an HttpResponse
+        val responseHeaders = HttpHeaders()
+
+        val headers = response.headers.all().filter { !it.key.equals("Matched-Stub-Id", ignoreCase = true) }
+        headers.forEach { header ->
+            responseHeaders.add(header.key(), header.firstValue())
         }
+
+        return HttpResponse(
+            HttpStatusCode.valueOf(response.status),
+            responseHeaders.apply {
+                add(HttpHeaders.CONTENT_TYPE, contentType)
+            },
+            response.bodyAsString
+        )
+
     }
+
 
 }

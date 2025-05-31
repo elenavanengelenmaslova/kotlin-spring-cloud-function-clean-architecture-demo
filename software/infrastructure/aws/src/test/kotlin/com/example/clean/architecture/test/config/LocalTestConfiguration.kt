@@ -10,4 +10,5 @@ class LocalTestConfiguration {
 
     @Bean
     fun s3Client(): S3Client = mockk(relaxed = true)
+
 }
