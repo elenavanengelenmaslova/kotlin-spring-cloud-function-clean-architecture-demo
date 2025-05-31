@@ -3,6 +3,8 @@ package com.example.cdk.azure
 import com.hashicorp.cdktf.*
 import com.hashicorp.cdktf.providers.azurerm.application_insights.ApplicationInsights
 import com.hashicorp.cdktf.providers.azurerm.application_insights.ApplicationInsightsConfig
+import com.hashicorp.cdktf.providers.azurerm.data_azurerm_log_analytics_workspace.DataAzurermLogAnalyticsWorkspace
+import com.hashicorp.cdktf.providers.azurerm.data_azurerm_log_analytics_workspace.DataAzurermLogAnalyticsWorkspaceConfig
 import com.hashicorp.cdktf.providers.azurerm.data_azurerm_resource_group.DataAzurermResourceGroup
 import com.hashicorp.cdktf.providers.azurerm.data_azurerm_resource_group.DataAzurermResourceGroupConfig
 import com.hashicorp.cdktf.providers.azurerm.linux_function_app.*
@@ -84,6 +86,14 @@ class AzureStack(scope: Construct, id: String) :
         val appServicePlanName =
             "demo_serverless_app_plan"
 
+        // Reference the existing Log Analytics Workspace
+        val logAnalyticsWorkspace = DataAzurermLogAnalyticsWorkspace(
+            this, "ExistingLogAnalyticsWorkspace",
+            DataAzurermLogAnalyticsWorkspaceConfig.builder()
+                .name("demo-mocknest-loganalytics")
+                .resourceGroupName(resourceGroupName)
+                .build()
+        )
 
         // Configure the Azure Provider
         AzurermProvider(
@@ -171,6 +181,7 @@ class AzureStack(scope: Construct, id: String) :
                 .resourceGroupName(resourceGroup.name)
                 .location(resourceGroup.location)
                 .applicationType("java")
+                .workspaceId(logAnalyticsWorkspace.id)
                 .build()
         )
         val storageAccountAccessKeyVar = TerraformVariable(

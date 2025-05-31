@@ -9,6 +9,18 @@
     }
   },
   "data": {
+    "azurerm_log_analytics_workspace": {
+      "ExistingLogAnalyticsWorkspace": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/ExistingLogAnalyticsWorkspace",
+            "uniqueId": "ExistingLogAnalyticsWorkspace"
+          }
+        },
+        "name": "demo-mocknest-loganalytics",
+        "resource_group_name": "${var.AZURE_RESOURCE_GROUP_NAME}"
+      }
+    },
     "azurerm_resource_group": {
       "ExistingResourceGroup": {
         "//": {
@@ -47,7 +59,8 @@
         "application_type": "java",
         "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
         "name": "demo-spring-cloud-app-insights",
-        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}"
+        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}",
+        "workspace_id": "${data.azurerm_log_analytics_workspace.ExistingLogAnalyticsWorkspace.id}"
       }
     },
     "azurerm_linux_function_app": {
