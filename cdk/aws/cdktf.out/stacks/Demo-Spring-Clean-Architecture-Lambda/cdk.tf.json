@@ -202,7 +202,6 @@
         "environment": {
           "variables": {
             "AWS_S3_BUCKET_NAME": "${aws_s3_bucket.DemoMockNestMappingsBucket.bucket}",
-            "BORED_API_URL": "https://bored-api.appbrewery.com/filter?type=social",
             "JAVA_TOOL_OPTIONS": "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
             "MAIN_CLASS": "com.example.clean.architecture.Application",
             "SPRING_CLOUD_FUNCTION_DEFINITION": "router"
