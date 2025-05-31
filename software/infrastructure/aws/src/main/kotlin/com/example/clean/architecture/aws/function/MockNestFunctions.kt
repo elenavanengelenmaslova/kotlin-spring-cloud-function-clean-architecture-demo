@@ -6,7 +6,6 @@ import com.example.clean.architecture.model.HttpRequest
 import com.example.clean.architecture.model.HttpResponse
 import com.example.clean.architecture.service.HandleAdminRequest
 import com.example.clean.architecture.service.HandleClientRequest
-import com.example.clean.architecture.service.HandleDemoRequest
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,7 +22,6 @@ private const val DEMO_PREFIX = "/api-consumer"
 class MockNestFunctions(
     private val handleClientRequest: HandleClientRequest,
     private val handleAdminRequest: HandleAdminRequest,
-    private val handleDemoRequest: HandleDemoRequest,
 ) {
     @Bean
     fun router(): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -37,9 +35,6 @@ class MockNestFunctions(
                     }
                     path.startsWith(MOCKNEST_PREFIX) -> {
                         handleClientRequest(createHttpRequest(path.removePrefix(MOCKNEST_PREFIX)))
-                    }
-                    path.startsWith(DEMO_PREFIX) -> {
-                        handleDemoRequest()
                     }
                     else -> {
                         HttpResponse(
