@@ -9,18 +9,6 @@
     }
   },
   "data": {
-    "azurerm_log_analytics_workspace": {
-      "ExistingLogAnalyticsWorkspace": {
-        "//": {
-          "metadata": {
-            "path": "Demo-Azure-Clean-Architecture/ExistingLogAnalyticsWorkspace",
-            "uniqueId": "ExistingLogAnalyticsWorkspace"
-          }
-        },
-        "name": "demo-mocknest-loganalytics",
-        "resource_group_name": "${var.AZURE_RESOURCE_GROUP_NAME}"
-      }
-    },
     "azurerm_resource_group": {
       "ExistingResourceGroup": {
         "//": {
@@ -60,7 +48,7 @@
         "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
         "name": "demo-spring-cloud-app-insights",
         "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}",
-        "workspace_id": "${data.azurerm_log_analytics_workspace.ExistingLogAnalyticsWorkspace.id}"
+        "workspace_id": "${azurerm_log_analytics_workspace.DemoLogAnalyticsWorkspace.id}"
       }
     },
     "azurerm_linux_function_app": {
@@ -95,6 +83,21 @@
         },
         "storage_account_access_key": "${var.AZURE_STORAGE_ACCOUNT_ACCESS_KEY}",
         "storage_account_name": "${var.AZURE_STORAGE_ACCOUNT_NAME}"
+      }
+    },
+    "azurerm_log_analytics_workspace": {
+      "DemoLogAnalyticsWorkspace": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Azure-Clean-Architecture/DemoLogAnalyticsWorkspace",
+            "uniqueId": "DemoLogAnalyticsWorkspace"
+          }
+        },
+        "location": "${data.azurerm_resource_group.ExistingResourceGroup.location}",
+        "name": "demo-mocknest-loganalytics",
+        "resource_group_name": "${data.azurerm_resource_group.ExistingResourceGroup.name}",
+        "retention_in_days": 30,
+        "sku": "PerGB2018"
       }
     },
     "azurerm_role_assignment": {
