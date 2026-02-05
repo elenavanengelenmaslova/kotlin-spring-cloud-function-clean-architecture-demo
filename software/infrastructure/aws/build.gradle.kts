@@ -6,7 +6,7 @@ plugins {
     id("maven-publish")
 }
 
-val smithyKotlinVersion = "1.4.11"
+val smithyKotlinVersion = "1.6.1"
 dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
