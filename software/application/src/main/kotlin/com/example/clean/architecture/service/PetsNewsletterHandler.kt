@@ -20,7 +20,7 @@ class PetsNewsletterHandler(
     private val objectMapper: ObjectMapper,
     private val restTemplate: RestTemplate,
     private val emailSender: DocumentNotificationInterface,
-    @Value("\${petstore.api.url}")
+    @Value("\${api.petstore.url}")
     private val petstoreApiUrl: String
 ) : HandlePetsNewsletterRequest {
 
@@ -29,15 +29,17 @@ class PetsNewsletterHandler(
      */
     private fun formatNewsletterAsHtml(newPet: Pet?, availablePets: List<Pet>): String {
         val featuredSection = if (newPet != null) {
+            val photoUrls = newPet.photoUrls
+            val tags = newPet.tags
             """
             <div class="featured">
                 <h2>🌟 New Pet Alert!</h2>
                 <div class="pet-card featured-pet">
-                    ${if (!newPet.photoUrls.isNullOrEmpty()) "<img src=\"${newPet.photoUrls[0]}\" alt=\"${newPet.name}\" class=\"pet-image\">" else ""}
+                    ${if (!photoUrls.isNullOrEmpty()) "<img src=\"${photoUrls[0]}\" alt=\"${newPet.name}\" class=\"pet-image\">" else ""}
                     <h3>${newPet.name ?: "Unknown"}</h3>
                     <p><span class="label">Status:</span> ${newPet.status ?: "N/A"}</p>
                     <p><span class="label">ID:</span> ${newPet.id ?: "N/A"}</p>
-                    ${if (!newPet.tags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${newPet.tags.joinToString(", ")}</p>" else ""}
+                    ${if (!tags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${tags.joinToString(", ")}</p>" else ""}
                 </div>
             </div>
             """
@@ -46,12 +48,13 @@ class PetsNewsletterHandler(
         }
 
         val petsList = availablePets.joinToString("") { pet ->
+            val petTags = pet.tags
             """
             <div class="pet-card">
                 <h4>${pet.name ?: "Unknown"}</h4>
                 <p><span class="label">ID:</span> ${pet.id ?: "N/A"}</p>
                 <p><span class="label">Status:</span> ${pet.status ?: "N/A"}</p>
-                ${if (!pet.tags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${pet.tags.joinToString(", ")}</p>" else ""}
+                ${if (!petTags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${petTags.joinToString(", ")}</p>" else ""}
             </div>
             """
         }
@@ -103,7 +106,7 @@ class PetsNewsletterHandler(
             val responseType = object : ParameterizedTypeReference<List<Pet>>() {}
 
             // Fetch pets with "new" tag
-            val newPetsUrl = "$petstoreApiUrl/petstore/pet/findByTags?tags=new"
+            val newPetsUrl = "$petstoreApiUrl/findByTags?tags=new"
             logger.info { "Calling Pet Store API for new pets at $newPetsUrl" }
             val newPetsResponse = restTemplate.exchange(
                 newPetsUrl,
@@ -115,7 +118,7 @@ class PetsNewsletterHandler(
             logger.info { "Received ${newPets.size} new pets: $newPets" }
 
             // Fetch all available pets
-            val availablePetsUrl = "$petstoreApiUrl/petstore/pet/findByStatus?status=available"
+            val availablePetsUrl = "$petstoreApiUrl/findByStatus?status=available"
             logger.info { "Calling Pet Store API for available pets at $availablePetsUrl" }
             val availablePetsResponse = restTemplate.exchange(
                 availablePetsUrl,

@@ -20,7 +20,7 @@ class DemoRequestHandler(
     private val objectMapper: ObjectMapper,
     private val restTemplate: RestTemplate,
     private val emailSender: DocumentNotificationInterface,
-    @param:Value("\${bored.api.url}")
+    @Value("\${api.bored.url}")
     private val boredApiUrl: String
 ) : HandleDemoRequest {
 

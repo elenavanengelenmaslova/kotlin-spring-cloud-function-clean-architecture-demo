@@ -1,0 +1,23 @@
+# Default Spring Profile - Always use 'dev' (MockNest) unless overridden
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+# AWS S3 Configuration
+aws:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:demo-mocknest-mappings}
+  ses:
+    sender-email: ${SENDER_EMAIL:docsflow@vintik.nl}
+    recipient-email: ${RECIPIENT_EMAIL:elenavanengelen@vintik.nl}
+
+# API Configuration (overridden by profile-specific configs)
+# Each API has its own URL and optional token
+# When token is present, X-Api-Key header is added
+api:
+  bored:
+    url: ${BORED_API_URL:https://bored-api.appbrewery.com/filter?type=social}
+    token: ${BORED_API_TOKEN:}
+  petstore:
+    url: ${PETSTORE_API_URL:https://petstore.swagger.io/v2}
+    token: ${PETSTORE_API_TOKEN:}

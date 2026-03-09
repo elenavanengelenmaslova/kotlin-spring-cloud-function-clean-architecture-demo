@@ -1,0 +1,14 @@
+# Production Profile - Uses Real APIs (no mocks)
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+# API Configuration - Real API endpoints (no tokens = no X-Api-Key header)
+api:
+  bored:
+    url: ${BORED_API_URL:https://bored-api.appbrewery.com/filter?type=social}
+    token: ${BORED_API_TOKEN:}  # Empty - no authentication
+  petstore:
+    url: ${PETSTORE_API_URL:https://petstore.swagger.io/v2}
+    token: ${PETSTORE_API_TOKEN:}  # Empty - no authentication

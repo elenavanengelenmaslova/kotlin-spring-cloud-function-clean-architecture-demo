@@ -207,6 +207,7 @@ class AwsStack(
                                 "SPRING_CLOUD_FUNCTION_DEFINITION" to "router",
                                 "MAIN_CLASS" to "com.example.clean.architecture.Application",
                                 "AWS_S3_BUCKET_NAME" to s3Bucket.bucket,
+                                "SPRING_PROFILES_ACTIVE" to "dev", // Always use dev profile (MockNest)
                                 //Stop at level 1 (C1 compiler)
                                 "JAVA_TOOL_OPTIONS" to "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
                                 "BORED_API_URL" to "https://bored-api.appbrewery.com/filter?type=social"

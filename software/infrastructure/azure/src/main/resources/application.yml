@@ -1,0 +1,21 @@
+# Default Spring Profile - Always use 'dev' (MockNest) unless overridden
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+# Azure Storage Configuration (using managed identity)
+azure:
+  storage:
+    endpoint: ${AZURE_STORAGE_ENDPOINT:https://demomocknest.blob.core.windows.net}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME:demo-mocknest-mappings}
+
+# API Configuration (overridden by profile-specific configs)
+# Each API has its own URL and optional token
+# When token is present, X-Api-Key header is added
+api:
+  bored:
+    url: ${BORED_API_URL:https://bored-api.appbrewery.com/filter?type=social}
+    token: ${BORED_API_TOKEN:}
+  petstore:
+    url: ${PETSTORE_API_URL:https://petstore.swagger.io/v2}
+    token: ${PETSTORE_API_TOKEN:}

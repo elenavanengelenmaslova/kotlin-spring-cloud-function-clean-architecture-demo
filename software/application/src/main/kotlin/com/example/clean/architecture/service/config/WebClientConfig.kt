@@ -5,10 +5,14 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestTemplate
 
 @Configuration
-class WebClientConfig {
+class WebClientConfig(
+    private val apiAuthInterceptor: ApiAuthInterceptor
+) {
 
     @Bean
     fun restTemplate(): RestTemplate {
-        return RestTemplate()
+        val restTemplate = RestTemplate()
+        restTemplate.interceptors.add(apiAuthInterceptor)
+        return restTemplate
     }
 }
