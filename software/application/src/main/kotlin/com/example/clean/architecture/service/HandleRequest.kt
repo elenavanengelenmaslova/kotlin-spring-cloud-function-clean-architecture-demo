@@ -12,3 +12,6 @@ fun interface HandleAdminRequest {
 fun interface HandleDemoRequest {
     operator fun invoke(): HttpResponse
 }
+fun interface HandlePetsNewsletterRequest {
+    operator fun invoke(): HttpResponse
+}

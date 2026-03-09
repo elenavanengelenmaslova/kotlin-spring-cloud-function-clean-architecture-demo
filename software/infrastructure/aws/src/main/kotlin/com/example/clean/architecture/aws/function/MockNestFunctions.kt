@@ -7,6 +7,7 @@ import com.example.clean.architecture.model.HttpResponse
 import com.example.clean.architecture.service.HandleAdminRequest
 import com.example.clean.architecture.service.HandleClientRequest
 import com.example.clean.architecture.service.HandleDemoRequest
+import com.example.clean.architecture.service.HandlePetsNewsletterRequest
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,12 +19,14 @@ private val logger = KotlinLogging.logger {}
 private const val ADMIN_PREFIX = "/__admin/"
 private const val MOCKNEST_PREFIX = "/mocknest/"
 private const val DEMO_PREFIX = "/api-consumer"
+private const val PETS_NEWSLETTER_PREFIX = "/pets-newsletter"
 
 @Configuration
 class MockNestFunctions(
     private val handleClientRequest: HandleClientRequest,
     private val handleAdminRequest: HandleAdminRequest,
     private val handleDemoRequest: HandleDemoRequest,
+    private val handlePetsNewsletterRequest: HandlePetsNewsletterRequest,
 ) {
     @Bean
     fun router(): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -40,6 +43,9 @@ class MockNestFunctions(
                     }
                     path.startsWith(DEMO_PREFIX) -> {
                         handleDemoRequest()
+                    }
+                    path.startsWith(PETS_NEWSLETTER_PREFIX) -> {
+                        handlePetsNewsletterRequest()
                     }
                     else -> {
                         HttpResponse(
