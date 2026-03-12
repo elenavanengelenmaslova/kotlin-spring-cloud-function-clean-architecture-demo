@@ -205,7 +205,9 @@
             "BORED_API_URL": "https://bored-api.appbrewery.com/filter?type=social",
             "JAVA_TOOL_OPTIONS": "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
             "MAIN_CLASS": "com.example.clean.architecture.Application",
-            "SPRING_CLOUD_FUNCTION_DEFINITION": "router"
+            "MOCKNEST_API_TOKEN": "${var.MOCKNEST_API_TOKEN}",
+            "SPRING_CLOUD_FUNCTION_DEFINITION": "router",
+            "SPRING_PROFILES_ACTIVE": "dev"
           }
         },
         "function_name": "Demo-Spring-Clean-Architecture-Fun",
@@ -286,6 +288,10 @@
     },
     "DEPLOY_TARGET_REGION": {
       "description": "The AWS region",
+      "type": "string"
+    },
+    "MOCKNEST_API_TOKEN": {
+      "description": "MockNest API Token",
       "type": "string"
     }
   }

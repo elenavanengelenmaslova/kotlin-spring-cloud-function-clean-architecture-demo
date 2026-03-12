@@ -14,12 +14,15 @@ on:
         required: true
       AWS_SECRET_KEY:
         required: true
+      MOCKNEST_API_TOKEN:
+        required: true
 
 env:
   # Supply target AWS account here
   TF_VAR_DEPLOY_TARGET_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
   DEPLOY_TARGET_REGION: ${{ inputs.aws_region }}
   BUILD_NO: ${{ github.run_number }}
+  TF_VAR_MOCKNEST_API_TOKEN: ${{ secrets.MOCKNEST_API_TOKEN }}
 
 jobs:
   build:

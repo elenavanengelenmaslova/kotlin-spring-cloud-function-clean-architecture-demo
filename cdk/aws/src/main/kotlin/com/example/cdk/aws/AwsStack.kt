@@ -65,6 +65,16 @@ class AwsStack(
                 .build()
         )
         val account = accountVar.stringValue
+
+        val mockNestTokenVar = TerraformVariable(
+            this,
+            "MOCKNEST_API_TOKEN",
+            TerraformVariableConfig.builder()
+                .type("string")
+                .description("MockNest API Token")
+                .build()
+        )
+        val mockNestToken = mockNestTokenVar.stringValue
         // Configure the AWS Provider
         AwsProvider(
             this,
@@ -210,7 +220,8 @@ class AwsStack(
                                 "SPRING_PROFILES_ACTIVE" to "dev", // Always use dev profile (MockNest)
                                 //Stop at level 1 (C1 compiler)
                                 "JAVA_TOOL_OPTIONS" to "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
-                                "BORED_API_URL" to "https://bored-api.appbrewery.com/filter?type=social"
+                                "BORED_API_URL" to "https://bored-api.appbrewery.com/filter?type=social",
+                                "MOCKNEST_API_TOKEN" to mockNestToken
                             )
                         ).build()
                 )

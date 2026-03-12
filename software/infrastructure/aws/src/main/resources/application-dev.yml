@@ -8,8 +8,8 @@ spring:
 # X-Api-Key header is automatically added when token is present
 api:
   bored:
-    url: ${MOCKNEST_API_URL:http://localhost:8080}/bored/api
+    url: ${MOCKNEST_API_URL:https://srpz0l3amh.execute-api.eu-west-1.amazonaws.com/mocks/mocknest/bored/api
     token: ${MOCKNEST_API_TOKEN:}
   petstore:
-    url: ${MOCKNEST_API_URL:http://localhost:8080}/petstore/pet
+    url: ${MOCKNEST_API_URL:https://srpz0l3amh.execute-api.eu-west-1.amazonaws.com/mocks/mocknest/petstore/pet
     token: ${MOCKNEST_API_TOKEN:}
