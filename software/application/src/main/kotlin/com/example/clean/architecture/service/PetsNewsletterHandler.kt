@@ -39,7 +39,7 @@ class PetsNewsletterHandler(
                     <h3>${newPet.name ?: "Unknown"}</h3>
                     <p><span class="label">Status:</span> ${newPet.status ?: "N/A"}</p>
                     <p><span class="label">ID:</span> ${newPet.id ?: "N/A"}</p>
-                    ${if (!tags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${tags.joinToString(", ")}</p>" else ""}
+                    ${if (!tags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${tags.mapNotNull { it.name }.joinToString(", ")}</p>" else ""}
                 </div>
             </div>
             """
@@ -54,7 +54,7 @@ class PetsNewsletterHandler(
                 <h4>${pet.name ?: "Unknown"}</h4>
                 <p><span class="label">ID:</span> ${pet.id ?: "N/A"}</p>
                 <p><span class="label">Status:</span> ${pet.status ?: "N/A"}</p>
-                ${if (!petTags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${petTags.joinToString(", ")}</p>" else ""}
+                ${if (!petTags.isNullOrEmpty()) "<p><span class=\"label\">Tags:</span> ${petTags.mapNotNull { it.name }.joinToString(", ")}</p>" else ""}
             </div>
             """
         }

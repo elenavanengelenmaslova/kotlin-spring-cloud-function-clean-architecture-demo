@@ -31,7 +31,7 @@ class SESEmailSender(
                 }
                 message = Message {
                     subject = Content {
-                        data = "Bored? Bored API has a suggestion for you!"
+                        data = "🐾 Ready to be a pet parent? Your new best friend awaits!"
                         charset = "UTF-8"
                     }
                     body = Body {
