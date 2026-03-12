@@ -1,37 +1,6 @@
 
-# Mock Nest
-## Use cases
-Some example use cases are shown below, however full API list is available here: [wiremock-admin-api.json](software/application/src/main/resources/wiremock-admin-api.json).
-![UseCases.png](docs/UseCases.png)
-_View with PlantUML IntelliJ plugin_
-```plantuml
+# Clean architectreu example
 
-@startuml
-
-actor "Mock Admin" as Admin
-actor "Client App" as Client
-
-rectangle "MockNest\n(Serverless WireMock)" {
-  (Create Mock) as Create
-  (Update Mock) as Update
-  (Delete All Mocks) as Delete
-  (Reset All Mocks) as Reset
-  (View Near Misses) as NearMisses
-  (Call Mocked API) as Call
-}
-
-Admin --> Create
-Admin --> Update
-Admin --> Delete
-Admin --> Reset
-Admin --> NearMisses
-
-Client --> Call
-@enduml
-
-
-
-```
 
 ## Solution Architecture
 ![SolutionDesign.png](docs/SolutionDesign.png)
