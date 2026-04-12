@@ -1,6 +1,10 @@
 package com.example.cdk.aws
 
 import com.hashicorp.cdktf.*
+import com.hashicorp.cdktf.providers.aws.api_gateway_rest_api_policy.ApiGatewayRestApiPolicy
+import com.hashicorp.cdktf.providers.aws.api_gateway_rest_api_policy.ApiGatewayRestApiPolicyConfig
+import com.hashicorp.cdktf.providers.aws.cloudwatch_event_bus.CloudwatchEventBus
+import com.hashicorp.cdktf.providers.aws.cloudwatch_event_bus.CloudwatchEventBusConfig
 import com.hashicorp.cdktf.providers.aws.api_gateway_api_key.ApiGatewayApiKey
 import com.hashicorp.cdktf.providers.aws.api_gateway_api_key.ApiGatewayApiKeyConfig
 import com.hashicorp.cdktf.providers.aws.api_gateway_deployment.ApiGatewayDeployment
@@ -103,6 +107,15 @@ class AwsStack(
             .build()
             .result
 
+        // Define EventBridge custom bus
+        val eventBus = CloudwatchEventBus(
+            this,
+            "Demo-Pets-Events-Bus",
+            CloudwatchEventBusConfig.builder()
+                .name("demo-pets-events-bus")
+                .build()
+        )
+
         // Define S3 bucket for MockNest mappings
         val s3Bucket = S3Bucket(
             this,
@@ -171,6 +184,13 @@ class AwsStack(
                  "ses:SendRawEmail"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "events:PutEvents"
+            ],
+            "Resource": "${eventBus.arn}"
         }
     ]
 }
@@ -221,7 +241,8 @@ class AwsStack(
                                 //Stop at level 1 (C1 compiler)
                                 "JAVA_TOOL_OPTIONS" to "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
                                 "BORED_API_URL" to "https://bored-api.appbrewery.com/filter?type=social",
-                                "MOCKNEST_API_TOKEN" to mockNestToken
+                                "MOCKNEST_API_TOKEN" to mockNestToken,
+                                "EVENTBRIDGE_BUS_NAME" to eventBus.name
                             )
                         ).build()
                 )
@@ -278,13 +299,49 @@ class AwsStack(
                 .build()
         )
 
+        // Create /pets-events API Gateway resource with IAM auth
+        val petsEventsResource = ApiGatewayResource(
+            this,
+            "Demo-Pets-Events-Resource",
+            ApiGatewayResourceConfig.builder()
+                .restApiId(api.id)
+                .parentId(api.rootResourceId)
+                .pathPart("pets-events")
+                .build()
+        )
+
+        val petsEventsMethod = ApiGatewayMethod(
+            this,
+            "Demo-Pets-Events-Method",
+            ApiGatewayMethodConfig.builder()
+                .restApiId(api.id)
+                .resourceId(petsEventsResource.id)
+                .httpMethod("POST")
+                .authorization("AWS_IAM")
+                .apiKeyRequired(false)
+                .build()
+        )
+
+        val petsEventsIntegration = ApiGatewayIntegration(
+            this,
+            "Demo-Pets-Events-Integration",
+            ApiGatewayIntegrationConfig.builder()
+                .restApiId(api.id)
+                .resourceId(petsEventsResource.id)
+                .httpMethod(petsEventsMethod.httpMethod)
+                .integrationHttpMethod("POST")
+                .type("AWS_PROXY")
+                .uri("arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${lambdaFunction.arn}/invocations")
+                .build()
+        )
+
         // Create API Gateway Deployment
         val deployment = ApiGatewayDeployment(
             this,
             "Demo-Spring-Clean-Architecture-Deployment",
             ApiGatewayDeploymentConfig.builder()
                 .restApiId(api.id)
-                .dependsOn(listOf(integration))
+                .dependsOn(listOf(integration, petsEventsIntegration))
                 .build()
         )
 
@@ -340,7 +397,7 @@ class AwsStack(
                 .build()
         )
 
-        // Grant API Gateway permission to invoke Lambda
+        // Grant API Gateway permission to invoke Lambda (proxy routes)
         LambdaPermission(
             this,
             "Demo-Spring-Clean-Architecture-Permission",
@@ -350,6 +407,66 @@ class AwsStack(
                 .principal("apigateway.amazonaws.com")
                 .sourceArn("arn:aws:execute-api:$region:$account:${api.id}/*/${method.httpMethod}/${resource.pathPart}")
                 .build()
+        )
+
+        // Grant API Gateway permission to invoke Lambda (pets-events route)
+        LambdaPermission(
+            this,
+            "Demo-Pets-Events-Permission",
+            LambdaPermissionConfig.builder()
+                .functionName(lambdaFunction.functionName)
+                .action("lambda:InvokeFunction")
+                .principal("apigateway.amazonaws.com")
+                .sourceArn("arn:aws:execute-api:$region:$account:${api.id}/*/POST/pets-events")
+                .build()
+        )
+
+        // API Gateway resource policy: allow any IAM principal in the same account to invoke /pets-events
+        ApiGatewayRestApiPolicy(
+            this,
+            "Demo-Pets-Events-ApiPolicy",
+            ApiGatewayRestApiPolicyConfig.builder()
+                .restApiId(api.id)
+                .policy("""
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${account}:root"
+            },
+            "Action": "execute-api:Invoke",
+            "Resource": "arn:aws:execute-api:${region}:${account}:${api.id}/demo/POST/pets-events"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "execute-api:Invoke",
+            "Resource": "arn:aws:execute-api:${region}:${account}:${api.id}/demo/*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:PrincipalAccount": "${account}"
+                }
+            }
+        }
+    ]
+}
+                """.trimIndent())
+                .build()
+        )
+
+        // Outputs for external Lambda to use
+        TerraformOutput(this, "pets-events-endpoint-arn", TerraformOutputConfig.builder()
+            .value("arn:aws:execute-api:$region:$account:${api.id}/demo/POST/pets-events")
+            .description("ARN for the IAM-protected pets-events endpoint")
+            .build()
+        )
+
+        TerraformOutput(this, "pets-events-endpoint-url", TerraformOutputConfig.builder()
+            .value("${stage.invokeUrl}/pets-events")
+            .description("URL for the IAM-protected pets-events endpoint")
+            .build()
         )
     }
 }

@@ -18,6 +18,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("aws.sdk.kotlin:s3-jvm:$smithyKotlinVersion")
     implementation("aws.sdk.kotlin:ses-jvm:$smithyKotlinVersion")
+    implementation("aws.sdk.kotlin:eventbridge-jvm:$smithyKotlinVersion")
     implementation("aws.smithy.kotlin:http-client-engine-okhttp:$smithyKotlinVersion")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.14")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")

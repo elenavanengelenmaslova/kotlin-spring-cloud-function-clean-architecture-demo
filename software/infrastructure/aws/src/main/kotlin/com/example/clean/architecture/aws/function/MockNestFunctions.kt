@@ -7,6 +7,7 @@ import com.example.clean.architecture.model.HttpResponse
 import com.example.clean.architecture.service.HandleAdminRequest
 import com.example.clean.architecture.service.HandleClientRequest
 import com.example.clean.architecture.service.HandleDemoRequest
+import com.example.clean.architecture.service.HandlePetsEventsRequest
 import com.example.clean.architecture.service.HandlePetsNewsletterRequest
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Bean
@@ -20,6 +21,7 @@ private const val ADMIN_PREFIX = "/__admin/"
 private const val MOCKNEST_PREFIX = "/mocknest/"
 private const val DEMO_PREFIX = "/api-consumer"
 private const val PETS_NEWSLETTER_PREFIX = "/pets-newsletter"
+private const val PETS_EVENTS_PREFIX = "/pets-events"
 
 @Configuration
 class MockNestFunctions(
@@ -27,6 +29,7 @@ class MockNestFunctions(
     private val handleAdminRequest: HandleAdminRequest,
     private val handleDemoRequest: HandleDemoRequest,
     private val handlePetsNewsletterRequest: HandlePetsNewsletterRequest,
+    private val handlePetsEventsRequest: HandlePetsEventsRequest,
 ) {
     @Bean
     fun router(): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -46,6 +49,9 @@ class MockNestFunctions(
                     }
                     path.startsWith(PETS_NEWSLETTER_PREFIX) -> {
                         handlePetsNewsletterRequest()
+                    }
+                    path.startsWith(PETS_EVENTS_PREFIX) -> {
+                        handlePetsEventsRequest(createHttpRequest(path.removePrefix(PETS_EVENTS_PREFIX)))
                     }
                     else -> {
                         HttpResponse(

@@ -13,3 +13,8 @@ api:
   petstore:
     url: ${MOCKNEST_API_URL:https://srpz0l3amh.execute-api.eu-west-1.amazonaws.com/mocks/mocknest/petstore/pet}
     token: ${MOCKNEST_API_TOKEN:}
+
+eventbridge:
+  bus-name: ${EVENTBRIDGE_BUS_NAME:demo-pets-events-bus}
+  source: pets-app
+  detail-type: PetsEvent

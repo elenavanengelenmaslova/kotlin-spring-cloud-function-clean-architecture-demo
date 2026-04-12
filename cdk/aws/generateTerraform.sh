@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Force Java 21 for this build
+export JAVA_HOME=/Users/e.maslova/Library/Java/JavaVirtualMachines/openjdk-21.0.1/Contents/Home
+
 # Step 1: Go to project root (this assumes script is in scripts/)
 cd "$(dirname "$0")/../.."
 
