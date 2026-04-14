@@ -6,6 +6,20 @@
       "version": "0.20.11"
     },
     "outputs": {
+      "Demo-Spring-Clean-Architecture-Lambda": {
+        "pets-events-endpoint-arn": "pets-events-endpoint-arn",
+        "pets-events-endpoint-url": "pets-events-endpoint-url"
+      }
+    }
+  },
+  "output": {
+    "pets-events-endpoint-arn": {
+      "description": "ARN for the IAM-protected pets-events endpoint",
+      "value": "arn:aws:execute-api:${var.DEPLOY_TARGET_REGION}:${var.DEPLOY_TARGET_ACCOUNT}:${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}/demo/POST/pets-events"
+    },
+    "pets-events-endpoint-url": {
+      "description": "URL for the IAM-protected pets-events endpoint",
+      "value": "${aws_api_gateway_stage.Demo-Spring-Clean-Architecture-Stage.invoke_url}/pets-events"
     }
   },
   "provider": {
@@ -42,12 +56,27 @@
           }
         },
         "depends_on": [
-          "aws_api_gateway_integration.Demo-Spring-Clean-Architecture-Integration"
+          "aws_api_gateway_integration.Demo-Spring-Clean-Architecture-Integration",
+          "aws_api_gateway_integration.Demo-Pets-Events-Integration"
         ],
         "rest_api_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}"
       }
     },
     "aws_api_gateway_integration": {
+      "Demo-Pets-Events-Integration": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Spring-Clean-Architecture-Lambda/Demo-Pets-Events-Integration",
+            "uniqueId": "Demo-Pets-Events-Integration"
+          }
+        },
+        "http_method": "${aws_api_gateway_method.Demo-Pets-Events-Method.http_method}",
+        "integration_http_method": "POST",
+        "resource_id": "${aws_api_gateway_resource.Demo-Pets-Events-Resource.id}",
+        "rest_api_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}",
+        "type": "AWS_PROXY",
+        "uri": "arn:aws:apigateway:${var.DEPLOY_TARGET_REGION}:lambda:path/2015-03-31/functions/${aws_lambda_function.Demo-Spring-Clean-Architecture-Fun.arn}/invocations"
+      },
       "Demo-Spring-Clean-Architecture-Integration": {
         "//": {
           "metadata": {
@@ -64,6 +93,19 @@
       }
     },
     "aws_api_gateway_method": {
+      "Demo-Pets-Events-Method": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Spring-Clean-Architecture-Lambda/Demo-Pets-Events-Method",
+            "uniqueId": "Demo-Pets-Events-Method"
+          }
+        },
+        "api_key_required": false,
+        "authorization": "AWS_IAM",
+        "http_method": "POST",
+        "resource_id": "${aws_api_gateway_resource.Demo-Pets-Events-Resource.id}",
+        "rest_api_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}"
+      },
       "Demo-Spring-Clean-Architecture-Method": {
         "//": {
           "metadata": {
@@ -79,6 +121,17 @@
       }
     },
     "aws_api_gateway_resource": {
+      "Demo-Pets-Events-Resource": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Spring-Clean-Architecture-Lambda/Demo-Pets-Events-Resource",
+            "uniqueId": "Demo-Pets-Events-Resource"
+          }
+        },
+        "parent_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.root_resource_id}",
+        "path_part": "pets-events",
+        "rest_api_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}"
+      },
       "Demo-Spring-Clean-Architecture-Resource": {
         "//": {
           "metadata": {
@@ -101,6 +154,18 @@
         },
         "description": "API for Spring Clean Architecture Example",
         "name": "Demo-Spring-Clean-Architecture-API"
+      }
+    },
+    "aws_api_gateway_rest_api_policy": {
+      "Demo-Pets-Events-ApiPolicy": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Spring-Clean-Architecture-Lambda/Demo-Pets-Events-ApiPolicy",
+            "uniqueId": "Demo-Pets-Events-ApiPolicy"
+          }
+        },
+        "policy": "{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"AWS\": \"arn:aws:iam::${var.DEPLOY_TARGET_ACCOUNT}:root\"\n            },\n            \"Action\": \"execute-api:Invoke\",\n            \"Resource\": \"arn:aws:execute-api:${var.DEPLOY_TARGET_REGION}:${var.DEPLOY_TARGET_ACCOUNT}:${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}/demo/POST/pets-events\"\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Principal\": \"*\",\n            \"Action\": \"execute-api:Invoke\",\n            \"Resource\": \"arn:aws:execute-api:${var.DEPLOY_TARGET_REGION}:${var.DEPLOY_TARGET_ACCOUNT}:${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}/demo/*\",\n            \"Condition\": {\n                \"StringEquals\": {\n                    \"aws:PrincipalAccount\": \"${var.DEPLOY_TARGET_ACCOUNT}\"\n                }\n            }\n        }\n    ]\n}",
+        "rest_api_id": "${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}"
       }
     },
     "aws_api_gateway_stage": {
@@ -147,6 +212,17 @@
         "usage_plan_id": "${aws_api_gateway_usage_plan.Demo-Spring-Clean-Architecture-UsagePlan.id}"
       }
     },
+    "aws_cloudwatch_event_bus": {
+      "Demo-Pets-Events-Bus": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Spring-Clean-Architecture-Lambda/Demo-Pets-Events-Bus",
+            "uniqueId": "Demo-Pets-Events-Bus"
+          }
+        },
+        "name": "demo-pets-events-bus"
+      }
+    },
     "aws_iam_policy": {
       "Demo-Spring-Clean-Architecture-Fun-Policy": {
         "//": {
@@ -159,7 +235,7 @@
           "aws_s3_bucket.DemoMockNestMappingsBucket"
         ],
         "name": "Demo-Spring-Clean-Architecture-Fun-Policy",
-        "policy": "{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"logs:CreateLogGroup\",\n                \"logs:CreateLogStream\",\n                \"logs:PutLogEvents\"\n            ],\n            \"Resource\": \"arn:aws:logs:*:*:*\"\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:PutObject\",\n                \"s3:GetObject\",\n                \"s3:ListBucket\",\n                \"s3:DeleteObject\"\n            ],\n            \"Resource\": [\n                \"${aws_s3_bucket.DemoMockNestMappingsBucket.arn}\",          \n                \"${aws_s3_bucket.DemoMockNestMappingsBucket.arn}/*\"   \n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                 \"ses:SendEmail\",\n                 \"ses:SendRawEmail\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}"
+        "policy": "{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"logs:CreateLogGroup\",\n                \"logs:CreateLogStream\",\n                \"logs:PutLogEvents\"\n            ],\n            \"Resource\": \"arn:aws:logs:*:*:*\"\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:PutObject\",\n                \"s3:GetObject\",\n                \"s3:ListBucket\",\n                \"s3:DeleteObject\"\n            ],\n            \"Resource\": [\n                \"${aws_s3_bucket.DemoMockNestMappingsBucket.arn}\",          \n                \"${aws_s3_bucket.DemoMockNestMappingsBucket.arn}/*\"   \n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                 \"ses:SendEmail\",\n                 \"ses:SendRawEmail\"\n            ],\n            \"Resource\": \"*\"\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"events:PutEvents\"\n            ],\n            \"Resource\": \"${aws_cloudwatch_event_bus.Demo-Pets-Events-Bus.arn}\"\n        }\n    ]\n}"
       }
     },
     "aws_iam_role": {
@@ -203,6 +279,7 @@
           "variables": {
             "AWS_S3_BUCKET_NAME": "${aws_s3_bucket.DemoMockNestMappingsBucket.bucket}",
             "BORED_API_URL": "https://bored-api.appbrewery.com/filter?type=social",
+            "EVENTBRIDGE_BUS_NAME": "${aws_cloudwatch_event_bus.Demo-Pets-Events-Bus.name}",
             "JAVA_TOOL_OPTIONS": "-XX:+TieredCompilation -XX:TieredStopAtLevel=1",
             "MAIN_CLASS": "com.example.clean.architecture.Application",
             "MOCKNEST_API_TOKEN": "${var.MOCKNEST_API_TOKEN}",
@@ -222,6 +299,18 @@
       }
     },
     "aws_lambda_permission": {
+      "Demo-Pets-Events-Permission": {
+        "//": {
+          "metadata": {
+            "path": "Demo-Spring-Clean-Architecture-Lambda/Demo-Pets-Events-Permission",
+            "uniqueId": "Demo-Pets-Events-Permission"
+          }
+        },
+        "action": "lambda:InvokeFunction",
+        "function_name": "${aws_lambda_function.Demo-Spring-Clean-Architecture-Fun.function_name}",
+        "principal": "apigateway.amazonaws.com",
+        "source_arn": "arn:aws:execute-api:${var.DEPLOY_TARGET_REGION}:${var.DEPLOY_TARGET_ACCOUNT}:${aws_api_gateway_rest_api.Demo-Spring-Clean-Architecture-API.id}/*/POST/pets-events"
+      },
       "Demo-Spring-Clean-Architecture-Permission": {
         "//": {
           "metadata": {
