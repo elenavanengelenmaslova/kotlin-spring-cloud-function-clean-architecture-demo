@@ -427,32 +427,34 @@ class AwsStack(
             "Demo-Pets-Events-ApiPolicy",
             ApiGatewayRestApiPolicyConfig.builder()
                 .restApiId(api.id)
-                .policy("""
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::${account}:root"
-            },
-            "Action": "execute-api:Invoke",
-            "Resource": "arn:aws:execute-api:${region}:${account}:${api.id}/demo/POST/pets-events"
-        },
-        {
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "execute-api:Invoke",
-            "Resource": "arn:aws:execute-api:${region}:${account}:${api.id}/demo/*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:PrincipalAccount": "${account}"
+                .policy(
+                    """
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "AllowDemoStage",
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": "execute-api:Invoke",
+                  "Resource": "execute-api:/demo/*"
+                },
+                {
+                  "Sid": "DenyPetsEventsOutsideThisAccount",
+                  "Effect": "Deny",
+                  "Principal": "*",
+                  "Action": "execute-api:Invoke",
+                  "Resource": "execute-api:/demo/POST/pets-events",
+                  "Condition": {
+                    "StringNotEquals": {
+                      "aws:PrincipalAccount": "${account}"
+                    }
+                  }
                 }
+              ]
             }
-        }
-    ]
-}
-                """.trimIndent())
+            """.trimIndent()
+                )
                 .build()
         )
 
